@@ -1,0 +1,15 @@
+# Sorted in order of preference: if identical events are collected by several
+# fetchers, the first one will be kept and any subsequent duplicate will be
+# ignored. Lines beginning with "#" or ";" are ignored.
+
+# icalbulk must be enabled to process calendars in iCal format (ics). They are
+# configured in ical.cfg.
+icalbulk IcalBulk
+
+# Only calendars in custom format need their own entry here and a custom fetcher
+# in fetcher/ directory.
+opensimworldfetcher OpenSimWorldFetcher
+islandoasisfetcher IslandOasisFetcher
+kitelyfetcher KitelyFetcher
+thirdrockfetcher ThirdRockFetcher
+gridtalkfetcher GridTalkFetcher

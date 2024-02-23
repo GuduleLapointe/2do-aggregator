@@ -1,0 +1,7 @@
+*~
+#*#
+.DS_Store
+data/*
+config/*.cfg
+node_modules/
+vendor/

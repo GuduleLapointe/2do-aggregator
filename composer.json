@@ -1,0 +1,16 @@
+{
+    "name": "magicoli/2do-aggregator",
+    "description": "PHP port of 2do-server, collects calendars from several sources and make them available under different formats ffor 2do-events, ics, json...",
+    "type": "project",
+    "license": "AGPL-3.0-or-later",
+    "authors": [
+        {
+            "name": "Gudule Lapointe",
+            "email": "gudule@speculoos.world"
+        }
+    ],
+    "require": {
+        "kigkonsult/icalcreator": "^2.41",
+        "magicoli/opensim-helpers": "^2.3"
+    }
+}

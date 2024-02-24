@@ -1,11 +1,11 @@
+#!/usr/bin/env php
 <?php
 require_once 'vendor/autoload.php';
+require_once 'helpers/includes/functions.php';
 
+// require_once 'vendor/magicoli/opensim-helpers/includes/opensim-helpers.php';
 use Kigkonsult\Icalcreator\Vcalendar;
 use Kigkonsult\Icalcreator\Vevent;
-
-define( 'EVENTS_NULL_KEY', '00000000-0000-0000-0000-000000000001' );
-define( 'DEFAULT_POS', array(128, 128, 25) );
 
 class Fetcher {
     private $calendars = array();
@@ -21,7 +21,7 @@ class Fetcher {
         if( ! file_exists($config) ) {
             // throw new Exception('ical.cfg not found');
             error_log("ical.cfg not found, aborting.\nCopy config/ical.cfg.example as config/ical.cfg and adjust to your state.");
-            die();
+            die(1);
         }
         $csv = file($config);
         #ignore empty lines, lines containing only spaces and lines starting with # or ;
@@ -45,6 +45,7 @@ class Fetcher {
                 continue;
             }
             $this->calendars[$slug] = array(
+                'slug' => $slug,
                 'grid_url' => $grid_url,
                 'ical_url' => trim($ical_url),
                 'type' => 'ical',
@@ -63,6 +64,8 @@ class Fetcher {
     }
 
     private function fetch_ical($slug, $calendar) {
+        error_log("calendar " . print_r($calendar, true));
+
         # get ical url with a timeout of 5 seconds
         $url = $calendar['ical_url'];
 
@@ -73,124 +76,141 @@ class Fetcher {
             error_log("$slug parse failed to fetch $url " . $e->get_message() );
             return;
         }
-        $events = json_decode($json, true);
+        $source_events = json_decode($json, true);
 
-        if( $events === null ) {
+        if( $source_events === null ) {
             error_log("$slug parse failed $url");
             return;
         }
-        if(empty($events)) {
+        if(empty($source_events)) {
             error_log("$slug parse no events found");
             return;
         }
-        if(!is_array($events)) {
+        if(!is_array($source_events)) {
             error_log("$slug parse wrong format");
             return;
         }
         
-        foreach ($events as $source) {
+        $events = array();
+        foreach ($source_events as $source) {
             error_log("source " . print_r($source, true) );
-            die("DEBUG\n");          
 
-            // $event = new Event($source);
-            // error_log("event " . print_r($event, true) );
-            // die("DEBUG\n");
-            
-            // $event = new Event(array(
-            //     'source'        => $slug,
-            //     'uid'           => $source['uid'],
-            //     'owneruuid'     => EVENTS_NULL_KEY, // Not implemented
-            //     'name'          => $source['summary'],
-            //     'creatoruuid'   => EVENTS_NULL_KEY, // Not implemented
-            //     'category'      => $source['categories'],
-            //     'description'   => $source['description'],
-            //     'dateUTC'       => $source['start'],
-            //     'duration'      => $source['duration'],
-            //     'covercharge'   => 0, // Not implemented
-            //     'coveramount'   => 0, // Not implemented
-            //     'simname'       => $source['location'],
-            //     'parcelUUID'    => EVENTS_NULL_KEY, // Not implemented
-            //     'globalPos'     => empty( $source['pos'] ) ? DEFAULT_POS : $source['pos'],
-            //     'eventflags'    => 0, // Not implemented
-            //     'gatekeeperURL' => $calendar['grid_url'],
-            //     'hash'          => $source['hash'],
-            // ));
+            $event = new Event($source, $calendar);
+            if($event === false) {
+                continue;
+            }
+            $events[$event->uid] = $event;
+            error_log("event " . print_r($event, true) );
+            die("DEBUG\n");
         }
     }
 }
 
 class Event {
     public $uid;
-    public $summary;
+    public $name;
     public $description;
-    public $start;
+    public $simname;
+    public $dateUTC;
     public $duration;
-    public $location;
-    public $pos;
+    public $category;
+    public $owneruuid;
+    public $creatoruuid;
+    public $covercharge;
+    public $coveramount;
+    public $parcelUUID;
+    public $globalPos;
+    public $eventflags;
+    public $gatekeeperURL;
     public $hash;
-    public $event = array();
-    public $categories = array(
-        'discussion'              => 18,
-        'sports'                  => 19,
-        'live music'              => 20,
-        'commercial'              => 22,
-        'nightlife/entertainment' => 23,
-        'games/contests'          => 24,
-        'pageants'                => 25,
-        'education'               => 26,
-        'arts and culture'        => 27,
-        'charity/support groups'  => 28,
-        'miscellaneous'           => 29,
 
-        // From HYPEvents code:
-        'art'                     => 27, // Art & Culture
-        'education'               => 26, // Education
-        'fair'                    => 23, // ambiguous, could be 23 Nightlife, or 27 Art, or 28 Charity
-        'lecture'                 => 27, // Art & Culture
-        'litterature'             => 27, // Art & Culture
-        'music'                   => 20, // Live Music
-        'roleplay'                => 24, // Games/Contests
-        'social'                  => 28, // Charity / Support Groups
-    );
-
-    public function __construct($data) {
-        $data = array_merge(array(
-            'source'        => NULL,
-            'uid'           => NULL,
-            'owneruuid'     => EVENTS_NULL_KEY, // Not implemented
-            'name'          => NULL,
-            'creatoruuid'   => EVENTS_NULL_KEY, // Not implemented
-            'category'      => NULL,
-            'description'   => NULL,
-            'dateUTC'       => NULL,
-            'duration'      => NULL,
-            'covercharge'   => 0, // Not implemented
-            'coveramount'   => 0, // Not implemented
-            'simname'       => NULL,
-            'parcelUUID'    => EVENTS_NULL_KEY, // Not implemented
-            'globalPos'     => NULL,
-            'eventflags'    => 0, // Not implemented
-            'gatekeeperURL' => NULL,
-            'hash'          => NULL,
-        ), $data);
-
+    /**
+     * Event constructor.
+     * 
+     * @param array $data
+     */
+    public function __construct($data, $calendar = array() ) {
+        // Make sure all required indices are present
+        $data = array_merge( EVENT_STRUCTURE, $data);
         $data['category'] = $this->sanitize_category($data['category']);
-        $data['simname'] = $this->sanitize_hgurl($data['simname']);
+        $data['simname'] = $this->sanitize_hgurl($data['simname'], $calendar['grid_url'] );
+        if(empty($data['simname'])) {
+            error_log( sprintf(
+                "%s event %s %s has no location, skipping",
+                $calendar['slug'],
+                $data['uid'],
+                $data['name'],
+            ) );
+            return false;
+        }
+        $this->uid = $data['uid'];
+        $this->owneruuid = $data['owneruuid'];
+        $this->name = $data['name'];
+        $this->creatoruuid = $data['creatoruuid'];
+        $this->category = $data['category'];
+        $this->description = $data['description'];
+        $this->dateUTC = $data['dateUTC'];
+        $this->duration = $data['duration'];
+        $this->covercharge = $data['covercharge'];
+        $this->coveramount = $data['coveramount'];
+        $this->simname = $data['simname'];
+        $this->parcelUUID = $data['parcelUUID'];
+        $this->globalPos = $data['globalPos'];
+        $this->eventflags = $data['eventflags'];
+        $this->gatekeeperURL = $data['gatekeeperURL'];
+        $this->hash = $data['hash'];
     }
 
-    public function sanitize_hgurl($url) {
+    public function sanitize_hgurl($url, $grid_url = null) {
+        static $sanitize_hgurl_cache = [];
+
+        if ( empty( $url ) ) {
+            $url = $grid_url;
+        }
+        
         // TODO: Implement
-        // $region     = opensim_sanitize_uri( $json_event['hgurl'], '', true );
-        // $get_region = opensim_get_region( $json_event['hgurl'] );
-        // $pos        = ( empty( $region['pos'] ) ) ? array( 128, 128, 25 ) : explode( '/', $region['pos'] );
-        // if ( ! empty( $get_region['x'] ) & ! empty( $get_region['y'] ) ) {
-        //     $pos[0] += $get_region['x'];
-        //     $pos[1] += $get_region['y'];
-        // }
-        // $pos = implode( ',', $pos );
-    
-        // $slurl       = opensim_format_tp( $json_event['hgurl'], TPLINK_TXT );
-        // $links       = opensim_format_tp( $json_event['hgurl'], TPLINK_APPTP + TPLINK_HOP );
+        $url = "speculoos.world:8002:Grand Place/12/13/23";
+        $url = "Grand Place/12/13/23";
+        
+        // Use cached value if available
+        if (isset($sanitize_hgurl_cache[$url])) {
+            error_log("cache hit for $url " . $sanitize_hgurl_cache[$url]);
+            return $sanitize_hgurl_cache[$url];
+        }
+
+        $region = opensim_sanitize_uri( $url, '', true );
+        error_log("opensim_sanitize_uri " . print_r($region, true) );
+        return $url;
+
+        $region['region'] = trim(str_replace("_", " ", $region['region'] ));
+        error_log("region before " . print_r($region, true) );
+        
+        $tmpurl = $region['gatekeeper'] . ':' . $region['region'] . ( empty($region['pos']) ? '' : '/' . $region['pos'] );
+        $region_data = opensim_get_region( $tmpurl );
+        $region['region'] = (empty($region['region'])) ? $region_data['region_name'] : $region['region'];
+        error_log("region_data " . print_r($region_data, true) );
+        error_log("region after " . print_r($region, true) );
+        if(empty($region_data)) {
+            error_log("get_region failed for $url");
+            return false;
+        }
+        
+        return $url;
+
+        
+
+        error_log("get_region " . print_r($region_data, true) );
+
+        $pos        = ( empty( $region['pos'] ) ) ? DEFAULT_POS : explode( '/', $region['pos'] );
+        error_log("pos " . print_r($pos, true) );
+
+        $region['pos'] = implode( ',', $pos );
+        error_log("region " . print_r($region, true) );
+
+
+        // $slurl       = opensim_format_tp( $url, TPLINK_TXT );
+        // $links       = opensim_format_tp( $url, TPLINK_APPTP + TPLINK_HOP );
+        $sanitize_hgurl_cache[$url] = $sanitizedUrl;
         return $url;
     }
 
@@ -213,5 +233,63 @@ class Event {
         return 29; // Not undefined, but unknown, so we return Miscellaneous
     }
 }
+
+function opensim_region_url($region) {
+    return $region['gatekeeper'] . ( empty($region['region']) ? '' : ':' . $region['region'])  . ( empty($region['pos']) ? '' : '/' . $region['pos'] );
+}
+
+define( 'EVENTS_NULL_KEY', '00000000-0000-0000-0000-000000000001' );
+define( 'DEFAULT_POS', array(128, 128, 25) );
+define( 'CATEGORIES', array(
+    'discussion'              => 18,
+    'sports'                  => 19,
+    'live music'              => 20,
+    'commercial'              => 22,
+    'nightlife/entertainment' => 23,
+    'games/contests'          => 24,
+    'pageants'                => 25,
+    'education'               => 26,
+    'arts and culture'        => 27,
+    'charity/support groups'  => 28,
+    'miscellaneous'           => 29,
+    
+    // Aliases
+    'nightlife'               => 23, // Nightlife/Entertainment
+    'entertainment'           => 23, // Nightlife/Entertainment
+    'games'                   => 24, // Games/Contests
+    'contests'                => 24, // Games/Contests
+    'charity'                 => 28, // Charity / Support Groups
+    'support groups'          => 28, // Charity / Support Groups
+
+    // From HYPEvents code:
+    'music'                   => 20, // Live Music
+    'fair'                    => 23, // Nightlife/Entertainment
+    'roleplay'                => 24, // Games/Contests
+    'education'               => 26, // Education
+    'art'                     => 27, // Art & Culture
+    'lecture'                 => 27, // Art & Culture
+    'litterature'             => 27, // Art & Culture
+    'social'                  => 28, // Charity / Support Groups
+));
+
+define('EVENT_STRUCTURE', array(
+    'source'        => NULL,
+    'uid'           => NULL,
+    'owneruuid'     => EVENTS_NULL_KEY, // Not implemented
+    'name'          => NULL,
+    'creatoruuid'   => EVENTS_NULL_KEY, // Not implemented
+    'category'      => NULL,
+    'description'   => NULL,
+    'dateUTC'       => NULL,
+    'duration'      => NULL,
+    'covercharge'   => 0, // Not implemented
+    'coveramount'   => 0, // Not implemented
+    'simname'       => NULL,
+    'parcelUUID'    => EVENTS_NULL_KEY, // Not implemented
+    'globalPos'     => NULL,
+    'eventflags'    => 0, // Not implemented
+    'gatekeeperURL' => NULL,
+    'hash'          => NULL,
+));
 
 $fetcher = new Fetcher();

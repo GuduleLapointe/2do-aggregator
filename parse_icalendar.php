@@ -12,7 +12,11 @@ $process_from = '- 1 day';
 $process_to = '+ 3 months';
 
 if( !isset($argv[1]) ) {
-    die("Usage: fetcher-ical.php <ical_url>\n");
+    // get script name
+    $scriptName = $argv[0];
+
+    error_log("Usage: $scriptName <ical_url>");
+    die(1);
 }
 
 $url = $argv[1];
@@ -32,7 +36,7 @@ try {
 }
 if($ics_data === false) {
     error_log("ERROR $url ical fetch failed");
-    die();
+    die(2);
 }
 
 $ics_data = preg_replace('/:MAILTO:(?![^:]*@[^:]*\.[^:]*\b)([^:\n]*)(?=\n|$)/i', "$1", $ics_data);
@@ -41,7 +45,7 @@ $ics_data = preg_replace('/:$/m', '', $ics_data);
 // Check if $ics_data is a valid ics formatted file or google calendar file
 if (strpos($ics_data, 'BEGIN:VCALENDAR') === false && strpos($ics_data, 'BEGIN:VEVENT') === false) {
     error_log("ERROR $url ical fetch failed, not a valid ics file");
-    die();
+    die(3);
 }
 
 // Use Kigkonsult\Icalcreator to parse $ics_data and create an array of events
@@ -52,7 +56,7 @@ try {
 } catch (InvalidArgumentException $e) {
     // Log the error
     error_log("parse error " . $e->get_message());
-    die();
+    die(4);
 }
 $vcalendar->sort();
 

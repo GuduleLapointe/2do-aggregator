@@ -1,7 +1,7 @@
 #!/usr/bin/env php
 <?php
 require_once 'vendor/autoload.php';
-require_once 'helpers/includes/functions.php';
+require_once 'includes/functions.php';
 
 // require_once 'vendor/magicoli/opensim-helpers/includes/opensim-helpers.php';
 use Kigkonsult\Icalcreator\Vcalendar;
@@ -170,20 +170,20 @@ class Event {
         
         // TODO: Implement
         $url = "speculoos.world:8002:Grand Place/12/13/23";
-        $url = "Grand Place/12/13/23";
+        // $url = "Grand Place/12/13/23";
         
         // Use cached value if available
         if (isset($sanitize_hgurl_cache[$url])) {
             error_log("cache hit for $url " . $sanitize_hgurl_cache[$url]);
             return $sanitize_hgurl_cache[$url];
         }
-
-        $region = opensim_sanitize_uri( $url, '', true );
-        error_log("opensim_sanitize_uri " . print_r($region, true) );
-        return $url;
+        
+        error_log("debug override url " . print_r($url, true) );
+        $region = opensim_sanitize_uri( $url, $grid_url, true );
 
         $region['region'] = trim(str_replace("_", " ", $region['region'] ));
         error_log("region before " . print_r($region, true) );
+        die("DEBUG\n");
         
         $tmpurl = $region['gatekeeper'] . ':' . $region['region'] . ( empty($region['pos']) ? '' : '/' . $region['pos'] );
         $region_data = opensim_get_region( $tmpurl );

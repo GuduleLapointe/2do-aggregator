@@ -12,5 +12,11 @@
     "require": {
         "kigkonsult/icalcreator": "^2.41",
         "magicoli/opensim-helpers": "^2.3"
+    },
+    "require-dev": {
+        "magicoli/php-bump-library": "^1.0"
+    },
+    "scripts": {
+      "bump-version": "vendor/magicoli/php-bump-library/vendor/bin/robo --load-from=vendor/magicoli/php-bump-library/RoboFile.php bump:version"
     }
 }

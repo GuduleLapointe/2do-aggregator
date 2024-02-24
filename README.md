@@ -35,6 +35,12 @@ If you really need to manage your own calendars collection, follow these instruc
 
 Clone this repository and put it in a convenient place like /opt/2do-aggregator (not inside the website root folder).
 
+Install libraries.
+  ```bash
+  cd /opt/2do-aggregator
+  composer install --no-dev
+  ```
+
 _Why outside the website directory? This is a script intended to be run from terminal or via a cron job, there is no point allowing random users or bots to run it from outside and risk overloading the server._
 
 - Copy config/ical.gfg.example and adjust to your need.

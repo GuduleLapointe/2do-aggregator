@@ -1,5 +1,11 @@
 #!/usr/bin/env php
 <?php
+
+// Make sure we are called from command line, not from a web server
+if (php_sapi_name() != 'cli') {
+    die("This script can only be run from the command line.\n");
+}
+
 require_once 'vendor/autoload.php';
 require_once 'includes/functions.php';
 
@@ -7,6 +13,15 @@ require_once 'includes/functions.php';
 use Kigkonsult\Icalcreator\Vcalendar;
 use Kigkonsult\Icalcreator\Vevent;
 
+/**
+ * Fetcher class
+ * 
+ * Fetches events from various sources and stores them as Event objects in an array.
+ * 
+ * @property array $calendars     // Array of source calendars to fetch
+ * @property int $timeout         // Fetch timeout in seconds
+ * @property array $events        // Array of fetched events
+ */
 class Fetcher {
     private $calendars = array();
     private $timeout = 5;
@@ -108,6 +123,29 @@ class Fetcher {
     }
 }
 
+/**
+ * Event class
+ * 
+ * Represents an event of the calendar
+ * 
+ * @property string $uid            // Unique identifier, collected from source if possible
+ * @property string $name           // Event name
+ * @property string $description    // Event description
+ * @property string $simname        // Region name for standalone grids only
+ *                                  // Region Hypergrid URL for hypergrid events
+ * @property string $dateUTC        // Event start date and time in UTC
+ * @property int $duration          // Event duration in minutes
+ * @property int $category          // Event category code number
+ * @property string $owneruuid      // Not implemented
+ * @property string $creatoruuid    // Not implemented
+ * @property int $covercharge       // Not implemented
+ * @property int $coveramount       // Not implemented
+ * @property string $parcelUUID     // Not implemented
+ * @property string $globalPos      // Not implemented
+ * @property int $eventflags        
+ * @property string $gatekeeperURL  // Region grid target URL
+ * @property string $hash           // Not implemented
+ */
 class Event {
     public $uid;
     public $name;
@@ -176,6 +214,13 @@ class Event {
         $this->hash = $data['hash'];
     }
 
+    /**
+     * Sanitize a hypergrid URL
+     * 
+     * @param string $url           // URL to sanitize
+     * @param string $grid_url      // Grid URL to use if $url is empty or missin host
+     * @return string|bool          // Sanitized URL or false if the region is offline or invalid
+     */
     public function sanitize_hgurl($url, $grid_url = null) {
         static $sanitize_hgurl_cache = [];
 
@@ -222,6 +267,15 @@ class Event {
         return $url;
     }
 
+    /**
+     * Sanitize category code. 
+     * 
+     * Return category code number if $value is a valid number, otherwise the best guess 
+     * based on the given string(s). First match wins.
+     * 
+     * @param integer|string|array $values  // Category name or array of category names
+     * @return int                          // Valid category code number
+     */
     public function sanitize_category($values) {
         if ( empty( $values ) ) {
             return 0; // Undefined
@@ -242,7 +296,12 @@ class Event {
     }
 }
 
-// check for command line arguments, if -q is set, don't output anything. -q could be anywhere in the arguments
+##
+# Set session parmaters according to command line arguments
+##
+
+// If -q is set, don't output anything. -q could be anywhere in the arguments
+// TODO: really honor -q, it doesn't work as expected now
 $quiet = in_array('-q', $argv) ? true : false; //|| in_array('-q', array_slice($argv, 1));
 if($quiet) {
     array_splice($argv, array_search('-q', $argv), 1);

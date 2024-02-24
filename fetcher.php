@@ -11,18 +11,20 @@ class Fetcher {
     private $calendars = array();
     private $timeout = 5;
     private $events = array();
-
+    
     public function __construct() {
         $this->read_config_ical();
         $this->fetch();
+        // print_r($this->events);
     }
     
     private function read_config_ical( $config = 'config/ical.cfg' ) {
         if( ! file_exists($config) ) {
             // throw new Exception('ical.cfg not found');
-            error_log("ical.cfg not found, aborting.\nCopy config/ical.cfg.example as config/ical.cfg and adjust to your state.");
-            die(1);
+            echo "Copy config/ical.cfg.example as config/ical.cfg and adjust to your taste before running this script.\n\n";
+            osAdminNotice("ical.cfg not found, aborting.", 1, true);
         }
+
         $csv = file($config);
         #ignore empty lines, lines containing only spaces and lines starting with # or ;
         $csv = array_filter($csv, function($line) {
@@ -58,14 +60,13 @@ class Fetcher {
             if ($calendar['type'] == 'ical') {
                 $this->fetch_ical($slug, $calendar);
             } else {
-                error_log ( "$slug source type ${calendar['type']} not implemented" );
+                osAdminNotice ( "$slug source type ${calendar['type']} not implemented", 1 );
             }
         }
+        osAdminNotice("Fetched " . count($this->events) . " events");
     }
 
     private function fetch_ical($slug, $calendar) {
-        error_log("calendar " . print_r($calendar, true));
-
         # get ical url with a timeout of 5 seconds
         $url = $calendar['ical_url'];
 
@@ -73,36 +74,32 @@ class Fetcher {
         try {
             $json = shell_exec($command);
         } catch (Exception $e) {
-            error_log("$slug parse failed to fetch $url " . $e->get_message() );
+            osAdminNotice("$slug $url parse error " . " " . $e->get_code() . ": " . $e->get_message() );
             return;
         }
         $source_events = json_decode($json, true);
 
-        if( $source_events === null ) {
-            error_log("$slug parse failed $url");
-            return;
-        }
         if(empty($source_events)) {
-            error_log("$slug parse no events found");
+            osNotice("$slug no events");
             return;
         }
         if(!is_array($source_events)) {
-            error_log("$slug parse wrong format");
+            osAdminNotice("$slug $url error: wrong answer format", 1);
             return;
         }
         
         $events = array();
         foreach ($source_events as $source) {
-            error_log("source " . print_r($source, true) );
+            // osAdminNotice("source " . print_r($source, true) );
 
             $event = new Event($source, $calendar);
             if($event === false) {
                 continue;
             }
             $events[$event->uid] = $event;
-            error_log("event " . print_r($event, true) );
-            die("DEBUG\n");
         }
+        osNotice("$slug " . count($events) . " events");
+        $this->events = array_merge($this->events, $events);
     }
 }
 
@@ -130,19 +127,31 @@ class Event {
      * @param array $data
      */
     public function __construct($data, $calendar = array() ) {
+        $original_data = $data;
         // Make sure all required indices are present
         $data = array_merge( EVENT_STRUCTURE, $data);
         $data['category'] = $this->sanitize_category($data['category']);
-        $data['simname'] = $this->sanitize_hgurl($data['simname'], $calendar['grid_url'] );
-        if(empty($data['simname'])) {
-            error_log( sprintf(
-                "%s event %s %s has no location, skipping",
+        $sanitized_url = $this->sanitize_hgurl($data['simname'], $calendar['grid_url'] );
+        if($sanitized_url === false) {
+            osAdminNotice( sprintf(
+                "%s event %s error checking location %s",
                 $calendar['slug'],
                 $data['uid'],
-                $data['name'],
+                empty($data['simname']) ? $calendar['grid_url'] : $data['simname'],
             ) );
             return false;
         }
+        if(empty($sanitized_url)) {
+            osAdminNotice( sprintf(
+                "%s event %s has no location %s",
+                $calendar['slug'],
+                $data['uid'],
+                empty($data['simname']) ? $calendar['grid_url'] : $data['simname'],
+            ) );
+            return false;
+        }
+        $data['simname'] = $sanitized_url;
+
         $this->uid = $data['uid'];
         $this->owneruuid = $data['owneruuid'];
         $this->name = $data['name'];
@@ -167,50 +176,43 @@ class Event {
         if ( empty( $url ) ) {
             $url = $grid_url;
         }
-        
-        // TODO: Implement
-        $url = "speculoos.world:8002:Grand Place/12/13/23";
-        // $url = "Grand Place/12/13/23";
-        
-        // Use cached value if available
+
+        // Return cached value if available
         if (isset($sanitize_hgurl_cache[$url])) {
-            error_log("cache hit for $url " . $sanitize_hgurl_cache[$url]);
+            switch ($sanitize_hgurl_cache[$url]) {
+                case 'empty':
+                    return;
+                case 'offline':
+                    return false;
+                case 'invalid':
+                    return false;
+            }
             return $sanitize_hgurl_cache[$url];
         }
-        
-        error_log("debug override url " . print_r($url, true) );
+
         $region = opensim_sanitize_uri( $url, $grid_url, true );
 
-        $region['region'] = trim(str_replace("_", " ", $region['region'] ));
-        error_log("region before " . print_r($region, true) );
-        die("DEBUG\n");
+        $tmpurl = opensim_sanitize_uri( $url, $grid_url );
         
-        $tmpurl = $region['gatekeeper'] . ':' . $region['region'] . ( empty($region['pos']) ? '' : '/' . $region['pos'] );
         $region_data = opensim_get_region( $tmpurl );
-        $region['region'] = (empty($region['region'])) ? $region_data['region_name'] : $region['region'];
-        error_log("region_data " . print_r($region_data, true) );
-        error_log("region after " . print_r($region, true) );
+        
         if(empty($region_data)) {
-            error_log("get_region failed for $url");
+            osAdminNotice("region $tmpurl data could not be fetched" );
+
+            $sanitize_hgurl_cache[$url] = "invalid";
             return false;
         }
-        
-        return $url;
+        $region['region'] = (empty($region['region'])) ? $region_data['region_name'] : $region['region'];
+        if(!opensim_region_is_online($region)) {
+            osAdminNotice("region $tmpurl is offline" );
 
-        
+            $sanitize_hgurl_cache[$url] = "offline";
+            return false;
+        }
+        $tmpurl = $region['gatekeeper'] . ':' . $region['region'] . ( empty($region['pos']) ? '' : '/' . $region['pos'] );
+        $url = opensim_format_tp( $tmpurl, TPLINK_TXT );
 
-        error_log("get_region " . print_r($region_data, true) );
-
-        $pos        = ( empty( $region['pos'] ) ) ? DEFAULT_POS : explode( '/', $region['pos'] );
-        error_log("pos " . print_r($pos, true) );
-
-        $region['pos'] = implode( ',', $pos );
-        error_log("region " . print_r($region, true) );
-
-
-        // $slurl       = opensim_format_tp( $url, TPLINK_TXT );
-        // $links       = opensim_format_tp( $url, TPLINK_APPTP + TPLINK_HOP );
-        $sanitize_hgurl_cache[$url] = $sanitizedUrl;
+        $sanitize_hgurl_cache[$url] = $url;
         return $url;
     }
 
@@ -234,8 +236,53 @@ class Event {
     }
 }
 
-function opensim_region_url($region) {
-    return $region['gatekeeper'] . ( empty($region['region']) ? '' : ':' . $region['region'])  . ( empty($region['pos']) ? '' : '/' . $region['pos'] );
+// check for command line arguments, if -q is set, don't output anything. -q could be anywhere in the arguments
+$quiet = in_array('-q', $argv) ? true : false; //|| in_array('-q', array_slice($argv, 1));
+if($quiet) {
+    array_splice($argv, array_search('-q', $argv), 1);
+    error_reporting(0);
+    ini_set('display_errors', '0');
+}
+
+if( isset($argv[1]) ) {
+    $output_dir = $argv[1];
+    // error if output is not a directory
+} else {
+    // make temp directory for output
+
+    $tempnam = tempnam(sys_get_temp_dir(), basename($argv[0]) . '.');
+    if ($tempnam === false) {
+        osAdminNotice("Could not create temporary file", 1, true);
+    }
+    unlink($tempnam);
+    mkdir($tempnam);
+    $output_dir = $tempnam;
+
+    // trap exit and delete temp directory
+    register_shutdown_function(function() use ($tempnam) {
+        if (is_dir($tempnam)) {
+            $files = scandir($tempnam);
+            $files = array_diff($files, array('.', '..'));
+
+            // We don't delete temp directory unless it's empty
+            if(empty($files)) {
+                osadminNotice("Deleting empty temp directory $tempnam");
+                rmdir($tempnam);
+            // } else {
+            //     osAdminNotice("temp directory $tempnam is not empty, not deleting " . print_r($files, true), 1);
+            }
+            // foreach ($files as $file) {
+            //     if ($file == '.' || $file == '..') {
+            //         continue;
+            //     }
+            //     echo "unlink($tempnam . '/' . $file)";
+            // }
+            // echo "rmdir($tempnam)";
+        }
+    });
+}
+if( !is_dir($output_dir) ) {
+    osAdminNotice("Output directory $output_dir does not exist", 1, true);
 }
 
 define( 'EVENTS_NULL_KEY', '00000000-0000-0000-0000-000000000001' );

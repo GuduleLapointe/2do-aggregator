@@ -3,6 +3,7 @@
 // to stdout if a format that the parent script can use to fill an array of events
 
 require_once 'vendor/autoload.php';
+require_once 'includes/functions.php';
 
 use Kigkonsult\Icalcreator\Vcalendar;
 use Kigkonsult\Icalcreator\Vevent;
@@ -10,19 +11,16 @@ use Kigkonsult\Icalcreator\Vevent;
 $timeout = 5;
 $process_from = '- 1 day';
 $process_to = '+ 3 months';
+$scriptName = $argv[0];
 
 if( !isset($argv[1]) ) {
-    // get script name
-    $scriptName = $argv[0];
-
-    error_log("Usage: $scriptName <ical_url>");
-    die(1);
+    osAdminNotice("Usage: $scriptName <ical_url>", 1, true);
 }
 
 $url = $argv[1];
 
-// error_reporting(0);
-// ini_set('display_errors', '0');
+error_reporting(0);
+ini_set('display_errors', '0');
 
 try {
     $ics_data = file_get_contents($url, false, stream_context_create(array(
@@ -31,12 +29,10 @@ try {
         ),
     )));
 } catch (Exception $e) {
-    error_log( $e.get_message() );
-    die();
+    osAdminNotice( $e.get_message(), 1, true );
 }
 if($ics_data === false) {
-    error_log("ERROR $url ical fetch failed");
-    die(2);
+    osAdminNotice("$scriptName $url data fetch failed", 2, true);
 }
 
 $ics_data = preg_replace('/:MAILTO:(?![^:]*@[^:]*\.[^:]*\b)([^:\n]*)(?=\n|$)/i', "$1", $ics_data);
@@ -44,8 +40,7 @@ $ics_data = preg_replace('/:$/m', '', $ics_data);
 
 // Check if $ics_data is a valid ics formatted file or google calendar file
 if (strpos($ics_data, 'BEGIN:VCALENDAR') === false && strpos($ics_data, 'BEGIN:VEVENT') === false) {
-    error_log("ERROR $url ical fetch failed, not a valid ics file");
-    die(3);
+    osAdminNotice("$scripName $url ERROR, not a valid ics file", 3, true);
 }
 
 // Use Kigkonsult\Icalcreator to parse $ics_data and create an array of events
@@ -53,10 +48,9 @@ $vcalendar = Vcalendar::factory();
 
 try {
     $vcalendar->parse($ics_data);
-} catch (InvalidArgumentException $e) {
+} catch (Exception $e) {
     // Log the error
-    error_log("parse error " . $e->get_message());
-    die(4);
+    osAdminNotice("$scriptName $url error " . $e->get_code() . ': ' . $e->get_message(), 4, true);
 }
 $vcalendar->sort();
 
@@ -65,11 +59,20 @@ $startDate->modify($process_from);
 $endDate = new DateTime();
 $endDate->modify($process_to);
 
-$vevents = $vcalendar->selectComponents(
-    $startDate->format('Y'), $startDate->format('m'), $startDate->format('d'),
-    $endDate->format('Y'), $endDate->format('m'), $endDate->format('d'),
-    Vcalendar::VEVENT
-);
+try {
+    $vevents = $vcalendar->selectComponents(
+        $startDate->format('Y'), $startDate->format('m'), $startDate->format('d'),
+        $endDate->format('Y'), $endDate->format('m'), $endDate->format('d'),
+        Vcalendar::VEVENT
+    );
+} catch (Exception $e) {
+    // Log the error
+    osAdminNotice("$scriptName $url error " . $e->get_code() . ': ' . $e->get_message(), 5, true);
+}
+if($vevents === false) {
+    // Silently fail if no events are found
+    die();
+}
 
 $events = array();
 

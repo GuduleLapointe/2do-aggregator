@@ -96,7 +96,12 @@ class Fetcher {
             if($event === false) {
                 continue;
             }
-            $events[$event->uid] = $event;
+            // Don't override if already fetched, it might be a later date for repeating events
+            // TODO: check if repeating events share the same uid
+            // TODO: generate uid if not present (should not happen wih iCal though)
+            if(empty($events[$event->uid]) && empty($this->events[$event->uid])) {
+                $events[$event->uid] = $event;
+            }
         }
         osNotice("$slug " . count($events) . " events");
         $this->events = array_merge($this->events, $events);
@@ -152,6 +157,7 @@ class Event {
         }
         $data['simname'] = $sanitized_url;
 
+        // TODO: generate uid if not present (for other sources than iCal)
         $this->uid = $data['uid'];
         $this->owneruuid = $data['owneruuid'];
         $this->name = $data['name'];

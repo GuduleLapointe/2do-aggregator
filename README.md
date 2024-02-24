@@ -57,7 +57,31 @@ Events must have
 
 They might also include
 - A description (optional but recommended)
-- A category (optional) // TODO: add OpenSimulator valid categories list
+- A category (optional)
+
+### Categories
+
+Standard categories (recognized by SL/OpenSimulator viewer)
+- discussion
+- sports
+- live music
+- commercial
+- nightlife/entertainment
+- games/contests
+- pageants
+- education
+- arts and culture
+- charity/support groups
+- miscellaneous
+
+These aliases are also recognized as variants of standard categories:
+- art (art and culture)
+- lecture (art and culture)
+- litterature (art and culture)
+- fair (nightlife/entertainment)
+- music (life music)
+- roleplay (games/contests)
+- social (charity/support groups)
 
 ### Note for Google Calendar users
 

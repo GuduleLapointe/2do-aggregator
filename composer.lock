@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "13da86de4814aa74b0b3255fc29e15c1",
+    "content-hash": "0d72583c1c539bf23e54c8c9478bb58e",
     "packages": [
         {
             "name": "kigkonsult/icalcreator",
@@ -112,41 +112,6 @@
                 }
             ],
             "time": "2024-01-22T10:28:44+00:00"
-        },
-        {
-            "name": "magicoli/opensim-helpers",
-            "version": "v2.3.4",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/magicoli/opensim-helpers.git",
-                "reference": "a0cab01c774058ea3ad05342d916843f0e548f8c"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/magicoli/opensim-helpers/zipball/a0cab01c774058ea3ad05342d916843f0e548f8c",
-                "reference": "a0cab01c774058ea3ad05342d916843f0e548f8c",
-                "shasum": ""
-            },
-            "require-dev": {
-                "magicoli/php-bump-library": "^1.0"
-            },
-            "type": "library",
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "AGPL-3.0-or-later"
-            ],
-            "authors": [
-                {
-                    "name": "Gudule Lapointe",
-                    "email": "gudule@speculoos.world"
-                }
-            ],
-            "description": "Helpers needed to enable common functionalties like search, currency, events in OpenSimulator grids.",
-            "support": {
-                "issues": "https://github.com/magicoli/opensim-helpers/issues",
-                "source": "https://github.com/magicoli/opensim-helpers/tree/v2.3.4"
-            },
-            "time": "2023-08-04T22:18:32+00:00"
         }
     ],
     "packages-dev": [

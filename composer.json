@@ -10,8 +10,7 @@
         }
     ],
     "require": {
-        "kigkonsult/icalcreator": "^2.41",
-        "magicoli/opensim-helpers": "^2.3"
+        "kigkonsult/icalcreator": "^2.41"
     },
     "require-dev": {
         "magicoli/php-bump-library": "^1.0"

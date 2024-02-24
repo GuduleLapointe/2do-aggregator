@@ -1,0 +1,3 @@
+[submodule "helpers"]
+	path = src/helpers
+	url = https://github.com/GuduleLapointe/flexible_helper_scripts.git

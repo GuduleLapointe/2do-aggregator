@@ -2,6 +2,12 @@
 <?php
 
 // Make sure we are called from command line, not from a web server
+// TODO: control procedures before allowing web access, to avoid
+// - accidental exposure (config file path)
+// - overload (maximum requests per day/hour/minute)
+// - abuse
+// ...
+
 if (php_sapi_name() != 'cli') {
     die("This script can only be run from the command line.\n");
 }
@@ -85,7 +91,7 @@ class Fetcher {
         # get ical url with a timeout of 5 seconds
         $url = $calendar['ical_url'];
 
-        $command = 'php parse_icalendar.php ' . escapeshellarg($url);
+        $command = 'php parsers/ical-parser.php ' . escapeshellarg($url);
         try {
             $json = shell_exec($command);
         } catch (Exception $e) {

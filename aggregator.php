@@ -262,7 +262,7 @@ class Aggregator {
     }
     
     public static function admin_notice ( $message, $error_code = 0, $die = false) {
-        if ( ! Aggregator::verbose() ) {
+        if ( ! Aggregator::verbose() && $error_code == 0 ) {
             return;
         }   
         // get calling function and file

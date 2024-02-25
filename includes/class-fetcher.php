@@ -82,7 +82,7 @@ class Fetcher {
         # get ical url with a timeout of 5 seconds
         $url = $calendar['ical_url'];
 
-        $command = 'php ' . APP_DIR . '/parsers/ical-parser.php ' . escapeshellarg($url);
+        $command = 'php ' . APP_DIR . '/parsers/parser-ical.php ' . escapeshellarg($url);
         try {
             $json = shell_exec($command);
         } catch (Exception $e) {

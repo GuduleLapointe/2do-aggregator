@@ -27,7 +27,7 @@ class Fetcher {
     private function read_config_ical( $config = BASE_DIR . '/config/ical.cfg' ) {
         if( ! file_exists($config) ) {
             // throw new Exception('ical.cfg not found');
-            echo "Copy config/ical.cfg.example as config/ical.cfg and adjust to your taste before running this script.\n\n";
+            echo "Copy config/ical.cfg.example as $config and adjust to your taste before running this script.\n\n";
             Aggregator::admin_notice("ical.cfg not found, aborting.", 1, true);
         }
 

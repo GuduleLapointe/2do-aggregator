@@ -28,10 +28,12 @@ class HYPEvents_Exporter {
             // copy templates/events.lsl to output_dir
             copy('templates/events.lsl', $this->output_dir . '/events.lsl');
 
+            $name = $event->name;
             // Transliterating name to ASCII
-            $name = iconv('UTF-8', 'ASCII//TRANSLIT', utf8_encode($event->name));
+            // $name = preg_replace('/[\x{1F600}-\x{1F6FF}]/u', '', $event->name);
+            $name = Aggregator::remove_emoji($name);
+            $name = iconv('UTF-8', 'ASCII//TRANSLIT', utf8_encode($name));
             // Remove any remaining non-ASCII characters (icons, etc.)
-            $name = preg_replace('/[^\x20-\x7E]/','', $name);
             if( empty($name) ) {
                 continue;
             }
@@ -62,7 +64,7 @@ class HYPEvents_Exporter {
             
             $output .= "$name\n" . implode('~', $time_parts) . "\n$hgurl\n";
         }
-        echo "\n$output\n\n";
+        // echo "\n$output\n\n";
 
         $result = file_put_contents($this->output_dir . '/events.lsl2', $output);
         if( $result != false ) {

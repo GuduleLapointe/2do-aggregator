@@ -14,13 +14,14 @@ $process_to = '+ 3 months';
 $scriptName = $argv[0];
 
 if( !isset($argv[1]) ) {
-    osAdminNotice("Usage: $scriptName <ical_url>", 1, true);
+    error_log("Usage: $scriptName <ical_url>");
+    die(1);
 }
 
 $url = $argv[1];
 
-error_reporting(0);
-ini_set('display_errors', '0');
+// error_reporting(0);
+// ini_set('display_errors', '0');
 
 try {
     $ics_data = file_get_contents($url, false, stream_context_create(array(
@@ -29,10 +30,12 @@ try {
         ),
     )));
 } catch (Exception $e) {
-    osAdminNotice( $e.get_message(), 1, true );
+    error_log( $e.get_message() );
+    die(2);
 }
 if($ics_data === false) {
-    osAdminNotice("$scriptName $url data fetch failed", 2, true);
+    error_log("$scriptName $url data fetch failed");
+    die(3);
 }
 
 $ics_data = preg_replace('/:MAILTO:(?![^:]*@[^:]*\.[^:]*\b)([^:\n]*)(?=\n|$)/i', "$1", $ics_data);
@@ -40,7 +43,8 @@ $ics_data = preg_replace('/:$/m', '', $ics_data);
 
 // Check if $ics_data is a valid ics formatted file or google calendar file
 if (strpos($ics_data, 'BEGIN:VCALENDAR') === false && strpos($ics_data, 'BEGIN:VEVENT') === false) {
-    osAdminNotice("$scripName $url ERROR, not a valid ics file", 3, true);
+    error_log("$scripName $url ERROR, not a valid ics file");
+    die(4);
 }
 
 // Use Kigkonsult\Icalcreator to parse $ics_data and create an array of events
@@ -49,8 +53,8 @@ $vcalendar = Vcalendar::factory();
 try {
     $vcalendar->parse($ics_data);
 } catch (Exception $e) {
-    // Log the error
-    osAdminNotice("$scriptName $url error " . $e->get_code() . ': ' . $e->get_message(), 4, true);
+    
+    die(5);
 }
 $vcalendar->sort();
 
@@ -67,28 +71,54 @@ try {
     );
 } catch (Exception $e) {
     // Log the error
-    osAdminNotice("$scriptName $url error " . $e->get_code() . ': ' . $e->get_message(), 5, true);
+    error_log("$scriptName $url error " . $e->get_code() . ': ' . $e->get_message());
+    die(6);
 }
 if($vevents === false) {
+    // error_log("$scriptName $url no events found");
     // Silently fail if no events are found
     die();
 }
 
 $events = array();
-
+$events_count = 0;
 foreach ($vevents as $yearlyEvents) {
     foreach ($yearlyEvents as $monthlyEvents) {
         foreach ($monthlyEvents as $dailyEvents) {
             foreach ($dailyEvents as $vevent) {
                 $uid = $vevent->getUid();
-                $dtstart = $vevent->getDtstart();
-                $dtend = $vevent->getDtend();
+
+                $dtstart = $vevent->getXprop('X-CURRENT-DTSTART');
+                $dtend = $vevent->getXprop('X-CURRENT-DTEND');
+                $recurrence = $vevent->getXprop('X-RECURRENCE');
+                if( ! empty($recurrence) ) {
+                    $recurrence = $recurrence[1];
+                }
+
+                if ($dtstart !== null) {
+                    $dtstart = DateTime::createFromFormat('Y-m-d H:i:s e', $dtstart[1]);
+                } else {
+                    $dtstart = $vevent->getDtstart();
+                }
+                
+                if ($dtend !== null) {
+                    $dtend = DateTime::createFromFormat('Y-m-d H:i:s e', $dtend[1]);
+                } else {
+                    $dtend = $vevent->getDtend();
+                }
+                
+                if(empty($dtstart) || empty($dtend)) {
+                    $dtstart = $vevent->getDtstart();
+                    $dtend = $vevent->getDtend();
+                }
+
                 $duration = $vevent->getDuration();
 
                 if ($duration) {
                     $interval = new DateInterval($duration);
                     $durationInMinutes = $interval->days * 24 * 60 + $interval->h * 60 + $interval->i;
                 } else {
+                    // error_log("dtstart: " . print_r($dtstart, true) . " dtend: " . print_r($dtend, true) . "\n");
                     $interval = $dtend->diff($dtstart);
                     $durationInMinutes = $interval->days * 24 * 60 + $interval->h * 60 + $interval->i;
                 }
@@ -97,7 +127,7 @@ foreach ($vevents as $yearlyEvents) {
 
                 $event = array(
                     'source_url' => $url,
-                    'uid' => $vevent->getUid(),
+                    'uid' => $vevent->getUid() . (empty($recurrence) ? '' : '-' . $recurrence),
                     // 'dtstart' => $vevent->getDtstart(),
                     // 'dtend' => $vevent->getDtend(),
                     'dateUTC' => $dateUTC,
@@ -116,11 +146,12 @@ foreach ($vevents as $yearlyEvents) {
                     // 'gatekeeperURL' => null, // Will be processed. by the main script
                     // 'hash' => null, // Will be processed. by the main script
                 );
-
+                $events_count++;
                 $events[$uid] = $event;
             }
         }
     }
 }
+// error_log("\nDEBUG: " . count($events) . "/$events_count events\n");
 
 echo json_encode($events);

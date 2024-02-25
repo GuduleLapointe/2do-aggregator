@@ -69,6 +69,11 @@ class Fetcher {
                 Aggregator::admin_notice ( "$slug source type ${calendar['type']} not implemented", 1 );
             }
         }
+        
+        usort($this->events, function($a, $b) {
+            return $a->dateUTC <=> $b->dateUTC;
+        });
+
         Aggregator::notice(count($this->events) . " events fetched");
     }
 
@@ -111,5 +116,9 @@ class Fetcher {
         }
         Aggregator::notice("$slug " . count($events) . " events");
         $this->events = array_merge($this->events, $events);
+    }
+
+    public function get_events() {
+        return $this->events;
     }
 }

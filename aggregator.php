@@ -230,8 +230,8 @@ class Aggregator {
             Aggregator::admin_notice("Output directory $output_dir does not exist", 1, true);
         }
 
-        $this->output_dir = $output_dir;
-
+        $this->output_dir = rtrim($output_dir, '/');
+        self::admin_notice("Output directory: " . $this->output_dir);
     }
 
     public static function quiet() {

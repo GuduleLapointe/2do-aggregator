@@ -133,7 +133,7 @@ class Event {
             $sanitize_hgurl_cache[$url] = "invalid";
             return false;
         }
-        $region['region'] = (empty($region['region'])) ? $region_data['region_name'] : $region['region'];
+        $region['region'] = (empty($region['region']) &! empty($region_data['region_name'])) ? $region_data['region_name'] : $region['region'];
         if(!opensim_region_is_online($region)) {
             Aggregator::admin_notice("region $tmpurl is offline" );
 

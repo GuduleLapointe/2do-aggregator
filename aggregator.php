@@ -82,7 +82,7 @@ class Aggregator {
         require_once APP_DIR . '/includes/class-event.php';
         
         // Exporters
-        require_once APP_DIR . '/exporters/hypevents-export.php';
+        require_once APP_DIR . '/exporters/export-hypevents.php';
     }
 
     /**

@@ -405,42 +405,6 @@ function osXmlDie( $message = '' ) {
 	die;
 }
 
-function osNotice( $message ) {
-	echo $message . "\n";
-}
-
-function osAdminNotice( $message, $error_code = 0, $die = false) {
-	// get calling function and file
-	$trace = debug_backtrace();
-
-	
-	if(isset($trace[1])) {
-		$caller = $trace[1];
-	} else {
-		$caller = $trace[0];
-	}
-	$file = empty($caller['file']) ? '' : $caller['file'];
-	$function = $caller['function'] . "()" ?? 'main';
-	$line = $caller['line'] ?? 0;
-	$class = $caller['class'] ?? 'main';
-	$type = $caller['type'] ?? '::';
-	if($class != 'main') {
-		$function = $class . $type . $function;
-	}
-	$file = $file . ':' . $line;
-	$message = sprintf(
-		'%s%s: %s in %s',
-		$function,
-		empty($error_code) ? '' : " Error $error_code",
-		$message,
-		$file,
-	);
-	error_log( $message );
-	if($die == true) {
-		die( $error_code );
-	}
-}
-
 /**
  * Flush output and free client so following commands are executed in background
  *

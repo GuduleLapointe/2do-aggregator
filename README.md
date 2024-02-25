@@ -1,33 +1,40 @@
 # 2DO Aggregator
 
-![Version 2.0.0-dev](https://badgen.net/badge/Version/2.0.0-dev/FFaa00)
+![Version 0.1.0-dev](https://badgen.net/badge/Version/0.1.0-dev/FFaa00)
 ![Stable None](https://badgen.net/badge/Stable/None/00aa00)
 ![Requires PHP 7.3](https://badgen.net/badge/PHP/7.3/7884bf)
 ![License AGPLv3](https://badgen.net/badge/License/AGPLv3/552b55)
 
 The PHP port of python [2do-server](https://github.com/GuduleLapointe/2do-server).
 
-**This is a work in progress. As of writing, it is not even really working yet.**
+**This is a work in progress. Honestly, it's barely working at this stage. If you need a not perfect but production-ready alternative, use the original 2do-server.**
 
-Before download or install : the easiest way to use this is to get the teleport board 
-in-world (hop://speculoos.world:8002:Lab) and ask us to include your calendar in 
-[2do.directory](https://2do.directory/).
+_Before download or install_ : the easiest way to use this is to get the teleport board in-world (hop://speculoos.world:8002:Lab) and ask us to include your calendar in [2do.directory](https://2do.directory/).
 
 Aggregator is a tool to fetch events from various sources and export them 
 on several format, for use by 2do Board and other applications related with
 2do Events project.
 
-It will export
+Import formats:
 
-- events.lsl2   - for current versions of 2do-board
-- events.json   - compatible with events parser (in w4os and Flexible Helper Scripts)
-- events.ics    - iCalendar format, compatible with web, mobile and desktop calendars
-- static html web page
-- events.lsl    - old format for 2do-board, actually only a deprecation notice
+- [√] iCal (ics, iCalendar)
+- Custom web parsers:
+  - opensimworld
+  - islandoasis
+  - kitely
+  - thirdrock
+  - gridtalk
 
-This is a side PHP application intended to provide the same functionality as 2do-server,
-the original events fetcher of 2do project and the original HYPEvents code, but in a
-more modular and maintainable way, compatible with other tools of the 2do Events project.
+Export formats:
+
+- [√] HYPEvent (legacy 2do/HYPEvent format)
+  - [√] events.lsl2 (for current versions of 2do-board)
+  - [√] events.lsl  (old format, now includes only a deprecation notice)
+- JSON (events.json) compatible with events parsers (provided by w4os or Flexible Helper Scripts)
+- iCal (events.ics) iCalendar format, compatible with web, mobile and desktop calendars
+- Static html web calendar page for standalone use
+
+This is a side PHP application intended to provide the same functionality as 2do-server, the original events fetcher of 2do project and the original HYPEvents code, but in a more modular and maintainable way, and with better integration with other tools of 2do Events, w4os and Flexiple Helper Scripts projects.
 
 - 2do-board: the in-world board to display the calendar
 
@@ -53,8 +60,7 @@ Jump directly to "Calendar conventions" below for the events format.
 
 ## Installation
 
-Installation of this server is only relevant if you want to provide a custom-curated list calendar.
-If you really need to manage your own calendars collection, follow these instructions.
+_Installation of this server is only relevant if you want to provide a custom-curated list calendar. If you really need to manage your own calendars collection, follow these instructions._
 
 Clone this repository and put it in a convenient place like /opt/2do-aggregator (not inside the website root folder).
 
@@ -66,7 +72,7 @@ Install libraries.
 
 _Why outside the website directory? This is a script intended to be run from terminal or via a cron job, there is no point allowing random users or bots to run it from outside and risk overloading the server._
 
-- Copy config/ical.gfg.example and adjust to your need.
+Copy config/ical.gfg.example and add your calendar sources.
   ```bash
   cp config/ical.cfg.example config/ical.cfg
   ```
@@ -80,58 +86,56 @@ Events must have
 
 They might also include
 - A description (optional but recommended)
-- A category (optional)
+- A category (optional), following standards recognized by the viewers:
+  - discussion
+  - sports
+  - live music
+  - commercial
+  - nightlife/entertainment
+  - games/contests
+  - pageants
+  - education
+  - arts and culture
+  - charity/support groups
+  - miscellaneous
+  - These aliases are also recognized as variants of standard categories:
+    - art (art and culture)
+    - lecture (art and culture)
+    - litterature (art and culture)
+    - fair (nightlife/entertainment)
+    - music (life music)
+    - roleplay (games/contests)
+    - social (charity/support groups)
 
-### Categories
-
-Standard categories (recognized by SL/OpenSimulator viewer)
-- discussion
-- sports
-- live music
-- commercial
-- nightlife/entertainment
-- games/contests
-- pageants
-- education
-- arts and culture
-- charity/support groups
-- miscellaneous
-
-These aliases are also recognized as variants of standard categories:
-- art (art and culture)
-- lecture (art and culture)
-- litterature (art and culture)
-- fair (nightlife/entertainment)
-- music (life music)
-- roleplay (games/contests)
-- social (charity/support groups)
-
-### Note for Google Calendar users
+### How to export Google Calendar as .ics
 
 To get the url of your calendar in iCal format, move your mouse above the calendar you want to share, a three dots icon appears, select "Settings and Sharing" and scroll the page down to find Public iCal format adress. This is the value you need to copy as calendar ics url.
 
 ## Running
 
-_Not implemented. Currently the script is not finished and does not export the necessary files._
-
-- Run the script manually
+Run the script manually
   ```bash
-  php /opt/2do-aggregator/fetcher.php
+  /opt/2do-aggregator/aggregator.php /var/www/html/events/
   ```
 
-- Create a cronjob to run automatically (below example would run it every 4 hours)
+Create a cronjob to run automatically (below example would run it every 4 hours)
   ```
-  0 */4 * * * /usr/bin/env php /opt/2do-aggregator/fetcher.php
+  0 */4 * * * /opt/2do-aggregator/aggregator.php /var/www/html/events/
   ```
 
-- launch `http://www.yourgrid.org/events/` to check the result
-- to add events to OpenSimulator inworld search, install and configure an event parser, e.g.:
+Assuming `/var/www/html` is your website root directory, and `http://www.yourgrid.org/`, this would create:
+- `http://www.yourgrid.org/events/` a basic web calendar page
+- `http://www.yourgrid.org/events/events.lsl2` the source url for 2do Board
+- `http://www.yourgrid.org/events/events.json` the source url for events parsers
   - [w4os Web interface for OpenSimulator](https://w4os.org) (wordpress plugin + parsers)
   - [Flexible Helper Scripts](https://github.com/GuduleLapointe/flexible_helper_scripts) (standalone parsers)
 
 ## Related projects
 
-- [2do.directory](https://2do.directory) is a public hypergrid search engine based on 2do HYPEvents and allowing to implement in-world search in any grid, without installing this stuff.
-- [w4os Web interface for OpenSimulator](https://w4os.org) is a collection of tools and helpers, including 2do services, for grid management in a WordPress website. It uses 2do.directory by default.
-- [Flexible Helper Scripts](https://github.com/GuduleLapointe/flexible_helper_scripts) a collation of helpers, including in-world search engine, currency, events, offline messaging, uses 2do.directory by default for events.
-- [OutWorldz OpensimEvents](https://github.com/Outworldz/OpensimEvents) uses 2do directory. Our own [fork](https://github.com/GuduleLapointe/2do-search) is also useable as a web service and fixes relative path issues.
+Events parsers for in-world search:
+- [w4os Web interface for OpenSimulator](https://w4os.org) WordPress plugin for OpenSim grid management, providing also a collection of tools and helpers, including 2do services, It uses 2do.directory (see below) as default events source.
+- [Flexible Helper Scripts](https://github.com/GuduleLapointe/flexible_helper_scripts) standalone collection of helpers included in w4os, without web management interface, including in-world search engine, currency, events, offline messaging. It uses 2do.directory as default events source.
+
+Public calendars to use without installing this app:
+- [2do.directory](https://2do.directory), the public 2do Events hypergrid directory.
+- [OutWorldz OpensimEvents](https://github.com/Outworldz/OpensimEvents) another calendar based on HYPEvents/2do Events.

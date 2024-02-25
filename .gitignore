@@ -5,3 +5,5 @@ data/*
 config/*.cfg
 node_modules/
 vendor/
+test/
+output/

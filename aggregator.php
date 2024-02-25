@@ -44,6 +44,7 @@ class Aggregator {
      */
     public function run() {
         $fetcher = new Fetcher();
+        new HYPEvents_Exporter($fetcher->get_events(), $this->output_dir);
         // $fetcher->fetch();
         // $fetcher->export();
     }
@@ -66,6 +67,9 @@ class Aggregator {
         // Classes
         require_once 'includes/class-fetcher.php';
         require_once 'includes/class-event.php';
+        
+        // Exporters
+        require_once 'exporters/hypevents-export.php';
     }
 
     /**
@@ -74,8 +78,10 @@ class Aggregator {
      * Define constants for the application
      */
     private static function constants() {
+        define( 'AGGREGATOR_VERSION', '2.0.0-dev' );
+        
         define('BASE_DIR', __DIR__);
-        define('AGGREGATOR_VERSION', '0.0.1');
+
         define('IS_AGGR', true);
 
         define( 'EVENTS_NULL_KEY', '00000000-0000-0000-0000-000000000001' );
@@ -191,7 +197,7 @@ class Aggregator {
                         Aggregator::admin_notice("Deleting empty temp directory $tempnam");
                         rmdir($tempnam);
                     } else {
-                        echo "Results saved in\n$tempnam/\n";
+                        echo "Results saved in directory $tempnam/\n";
                     }
                     // foreach ($files as $file) {
                     //     if ($file == '.' || $file == '..') {

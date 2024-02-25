@@ -25,9 +25,6 @@ class Fetcher {
     }
     
     private function read_config_ical( $config = BASE_DIR . '/config/ical.cfg' ) {
-        echo "quiet " . Aggregator::quiet() . "\n";
-        echo "verbose " . Aggregator::verbose() . "\n";
-        die("DEBUG\n");
         if( ! file_exists($config) ) {
             // throw new Exception('ical.cfg not found');
             echo "Copy config/ical.cfg.example as config/ical.cfg and adjust to your taste before running this script.\n\n";
@@ -72,7 +69,7 @@ class Fetcher {
                 Aggregator::admin_notice ( "$slug source type ${calendar['type']} not implemented", 1 );
             }
         }
-        Aggregator::notice("Fetched " . count($this->events) . " events");
+        Aggregator::notice(count($this->events) . " events fetched");
     }
 
     private function fetch_ical($slug, $calendar) {

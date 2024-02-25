@@ -139,39 +139,37 @@ class Aggregator {
      * 
      * Load arguments and set session parameters
      */
-    private function load_args($args) {
-        // $args are command line arguments, check for -q (quiet) -v (verbose) -o (output directory) etc) or -h (help) option, and removed them from the array. The remaining arguments are the output directories.
-        self::$script = basename(array_shift($args));
-        $left = $args;
-        foreach($args as $arg) {
-            switch($arg) {
-                case '-q':
-                    self::$quiet = true;
-                    array_splice($left, array_search('$arg', $left), 1);
-                    break;
-                case '-v':
-                    self::$verbose = true;
-                    array_splice($left, array_search('$arg', $left), 1);
-                    break;
-                case '-h':
-                case '--help':
-                    echo "Usage: php " . self::$script . " [-q] [-v] [output_dir]\n";
-                    echo "  -q  quiet mode\n";
-                    echo "  -v  verbose mode (overriden if -q is set)\n";
-                    echo "If output dir is not set a temporary directory will be created\n";
-                    die();
-                    break;
-                case '--version':
-                    echo "Aggregator version " . AGGREGATOR_VERSION . "\n";
-                    die();
-                    break;
-            }
-        }
-        $args = $left;
+    private function load_args($args = [] ) {
+        global $argv;
 
-        if( isset($args[0]) ) {
+        self::$script = basename(($argv[0]));
+        $rest_index = null;
+        $opts = getopt('qvh', array('help', 'version'), $rest_index);
+        $pos_args = array_slice($argv, $rest_index);
+
+        if(isset($opts['q'])) {
+            self::$quiet = true;
+        }
+        if(isset($opts['v'])) {
+            self::$verbose = true;
+        }
+        if(isset($opts['h']) || isset($opts['help'])) {
+            echo "Usage: php " . self::$script . " [-q] [-v] [output_dir]\n";
+            echo "  -q  quiet mode\n";
+            echo "  -v  verbose mode (overriden if -q is set)\n";
+            echo "  -h|--help  show help and die\n";
+            echo "  --version  show version and die\n";
+            echo "If output dir is not set a temporary directory will be created\n";
+            die();
+        }
+        if(isset($opts['version'])) {
+            echo "Aggregator version " . AGGREGATOR_VERSION . "\n";
+            die();
+        }
+        
+        if( isset($pos_args[0]) ) {
             // use output directory from command line
-            $output_dir = $args[0];
+            $output_dir = $pos_args[0];
         } else {
             // make temp directory for output
         
@@ -188,13 +186,12 @@ class Aggregator {
                 if (is_dir($tempnam)) {
                     $files = scandir($tempnam);
                     $files = array_diff($files, array('.', '..'));
-        
                     // We don't delete temp directory unless it's empty
                     if(empty($files)) {
                         Aggregator::admin_notice("Deleting empty temp directory $tempnam");
                         rmdir($tempnam);
-                    // } else {
-                    //     Aggregator::admin_notice("temp directory $tempnam is not empty, not deleting " . print_r($files, true), 1);
+                    } else {
+                        echo "Results saved in\n$tempnam/\n";
                     }
                     // foreach ($files as $file) {
                     //     if ($file == '.' || $file == '..') {
@@ -226,14 +223,14 @@ class Aggregator {
         return self::$verbose;
     }
 
-    function notice( $message ) {
+    public static function notice( $message ) {
         if ( Aggregator::quiet() ) {
             return;
         }
         echo $message . "\n";
     }
-    
-    function admin_notice( $message, $error_code = 0, $die = false) {
+
+    public static function admin_notice ( $message, $error_code = 0, $die = false) {
         if ( ! Aggregator::verbose() ) {
             return;
         }   

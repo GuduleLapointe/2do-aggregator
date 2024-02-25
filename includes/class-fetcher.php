@@ -25,6 +25,7 @@ class Fetcher {
     }
     
     private function read_config_ical( $config = APP_DIR . '/config/ical.cfg' ) {
+        Aggregator::admin_notice("Reading $config");
         if( ! file_exists($config) ) {
             // throw new Exception('ical.cfg not found');
             echo "Copy config/ical.cfg.example as $config and adjust to your taste before running this script.\n\n";
@@ -81,7 +82,7 @@ class Fetcher {
         # get ical url with a timeout of 5 seconds
         $url = $calendar['ical_url'];
 
-        $command = 'php parsers/ical-parser.php ' . escapeshellarg($url);
+        $command = 'php ' . APP_DIR . '/parsers/ical-parser.php ' . escapeshellarg($url);
         try {
             $json = shell_exec($command);
         } catch (Exception $e) {

@@ -111,9 +111,9 @@ class Fetcher {
             // Don't override if already fetched, it might be a later date for repeating events
             // TODO: check if repeating events share the same uid
             // TODO: generate uid if not present (should not happen wih iCal though)
-            if(empty($events[$event->uid]) && empty($this->events[$event->uid])) {
-                $events[$event->uid] = $event;
-            }
+            // if(empty($events[$event->uid]) && empty($this->events[$event->uid])) {
+                $events[$event->hash] = $event;
+            // }
         }
         Aggregator::notice("$slug " . count($events) . " events");
         $this->events = array_merge($this->events, $events);

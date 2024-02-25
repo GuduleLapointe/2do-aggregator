@@ -11,7 +11,7 @@
  * See README.md for more information.
  * 
  * @package 2do-aggregator
- * @version 0.1.0-dev-2
+ * @version 0.1.1-dev
  * 
  * Plugin Name: (not a plugin, but keep this line, needed by bumping tool)
 **/
@@ -56,10 +56,12 @@ class Aggregator {
      * Run aggregator processes
      */
     public function run() {
+        // Collect and process events
         $fetcher = new Fetcher();
+
+        // Write events to file
         new HYPEvents_Exporter($fetcher->get_events(), $this->output_dir);
-        // $fetcher->fetch();
-        // $fetcher->export();
+        new JSON_Exporter($fetcher->get_events(), $this->output_dir);
     }
 
     /**
@@ -83,6 +85,7 @@ class Aggregator {
         
         // Exporters
         require_once APP_DIR . '/exporters/export-hypevents.php';
+        require_once APP_DIR . '/exporters/export-json.php';
     }
 
     /**
@@ -91,7 +94,7 @@ class Aggregator {
      * Define constants for the application
      */
     private static function constants() {
-        define( 'AGGREGATOR_VERSION', '0.1.0-dev-2' );
+        define( 'AGGREGATOR_VERSION', '0.1.1-dev' );
         define( 'BOARD_VER', '1.5.5' );
         
         define('APP_DIR', __DIR__);

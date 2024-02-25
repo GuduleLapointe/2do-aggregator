@@ -16,6 +16,7 @@ use Kigkonsult\Icalcreator\Vevent;
  * @property string $dateUTC        // Event start date and time in UTC
  * @property int $duration          // Event duration in minutes
  * @property int $category          // Event category code number
+ * @property int $categories        // Array of category names
  * @property string $owneruuid      // Not implemented
  * @property string $creatoruuid    // Not implemented
  * @property int $covercharge       // Not implemented
@@ -30,10 +31,11 @@ class Event {
     public $uid;
     public $name;
     public $description;
-    public $simname;
+    public $simname;            
     public $dateUTC;
     public $duration;
     public $category;
+    public $categories;
     public $owneruuid;
     public $creatoruuid;
     public $covercharge;
@@ -53,7 +55,9 @@ class Event {
         $original_data = $data;
         // Make sure all required indices are present
         $data = array_merge( EVENT_STRUCTURE, $data);
+
         $data['category'] = $this->sanitize_category($data['category']);
+
         $sanitized_url = $this->sanitize_hgurl($data['simname'], $calendar['grid_url'] );
         if($sanitized_url === false) {
             Aggregator::admin_notice( sprintf(
@@ -80,7 +84,8 @@ class Event {
         $this->owneruuid = $data['owneruuid'];
         $this->name = $data['name'];
         $this->creatoruuid = $data['creatoruuid'];
-        $this->category = $data['category'];
+        $this->category = $data['category'];            // OpenSim/SL category code
+        $this->categories = $data['categories'];        // Array of category names
         $this->description = $data['description'];
         $this->dateUTC = $data['dateUTC'];
         $this->duration = $data['duration'];
@@ -91,7 +96,9 @@ class Event {
         $this->globalPos = $data['globalPos'];
         $this->eventflags = $data['eventflags'];
         $this->gatekeeperURL = $data['gatekeeperURL'];
-        $this->hash = $data['hash'];
+        // eventlist.py:        new_hash = hashlib.md5( str(event_start) + hgurl ).hexdigest()
+        $this->hash = md5( $this->dateUTC . $this->simname );
+        $this->source = $calendar['slug'];
     }
 
     /**

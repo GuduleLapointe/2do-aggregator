@@ -129,6 +129,8 @@ foreach ($vevents as $yearlyEvents) {
                 
                 $dateUTC = $dtstart->setTimezone(new DateTimeZone('UTC'))->format('Y-m-d\TH:i:sP');
 
+                $categories = $vevent->getCategories();
+
                 $event = array(
                     'source_url' => $url,
                     'uid' => $vevent->getUid() . (empty($recurrence) ? '' : '-' . $recurrence),
@@ -139,7 +141,8 @@ foreach ($vevents as $yearlyEvents) {
                     // 'owneruuid' => null, // Not implemented
                     // 'creatoruuid' => null, // Not implemented
                     'name' => $vevent->getSummary(),
-                    'category' => $vevent->getCategories(),
+                    'category' => $categories,
+                    'categories' => $categories,
                     'description' => $vevent->getDescription(),
                     // 'covercharge' => 0, // Not implemented
                     // 'coveramount' => 0, // Not implemented

@@ -40,11 +40,12 @@ class Aggregator {
     public function __construct() {
         global $argv;
         
+        $this->load_args($argv);
+        
         session_start();
         self::constants();
         self::includes();
         
-        $this->load_args($argv);
 
         $this->run();
     }
@@ -70,18 +71,18 @@ class Aggregator {
      */
     private static function includes() { 
         // Composer dependencies
-        require_once 'vendor/autoload.php';
+        require_once APP_DIR . '/vendor/autoload.php';
 
         // OpenSimulator functions
-        require_once 'includes/functions.php';
+        require_once APP_DIR . '/includes/functions.php';
         // require_once 'vendor/magicoli/opensim-helpers/includes/opensim-helpers.php';
         
         // Classes
-        require_once 'includes/class-fetcher.php';
-        require_once 'includes/class-event.php';
+        require_once APP_DIR . '/includes/class-fetcher.php';
+        require_once APP_DIR . '/includes/class-event.php';
         
         // Exporters
-        require_once 'exporters/hypevents-export.php';
+        require_once APP_DIR . '/exporters/hypevents-export.php';
     }
 
     /**
@@ -93,7 +94,8 @@ class Aggregator {
         define( 'AGGREGATOR_VERSION', '2.0.0-dev' );
         define( 'BOARD_VER', '1.5.5' );
         
-        define('BASE_DIR', __DIR__);
+        define('APP_DIR', __DIR__);
+        self::admin_notice("APP_DIR: " . APP_DIR);
 
         define('IS_AGGR', true);
 

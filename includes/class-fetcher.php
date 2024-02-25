@@ -24,7 +24,7 @@ class Fetcher {
         // print_r($this->events);
     }
     
-    private function read_config_ical( $config = BASE_DIR . '/config/ical.cfg' ) {
+    private function read_config_ical( $config = APP_DIR . '/config/ical.cfg' ) {
         if( ! file_exists($config) ) {
             // throw new Exception('ical.cfg not found');
             echo "Copy config/ical.cfg.example as $config and adjust to your taste before running this script.\n\n";

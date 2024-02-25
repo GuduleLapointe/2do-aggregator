@@ -1,7 +1,19 @@
 #!/usr/bin/env php
 <?php
 /**
- * 2do Aggregator main file
+ * 2do Aggregator
+ *
+ * Main script, use from terminal or cron task.
+ * DO NOT PUBLISH THIS FILE IN A WEB SERVER.
+ * 
+ * Usage: php aggregator.php [-q] [-v] [output_dir]
+ * 
+ * See README.md for more information.
+ * 
+ * @package 2do-aggregator
+ * @version 2.0.0-dev
+ * 
+ * Plugin Name: (not a plugin, but keep this line, needed by bumping tool)
 **/
 
 // Make sure we are called from command line, not from a web server

@@ -5,13 +5,36 @@
 ![Requires PHP 7.3](https://badgen.net/badge/PHP/7.3/7884bf)
 ![License AGPLv3](https://badgen.net/badge/License/AGPLv3/552b55)
 
-The PHP port from python [2do-server](https://github.com/GuduleLapointe/2do-server).
+The PHP port of python [2do-server](https://github.com/GuduleLapointe/2do-server).
 
 **This is a work in progress. As of writing, it is not even really working yet.**
 
-Fetch hypergrid calendars from different sources and export them on different formats (iCal, json, HYPEvents, HYPEvents2...).
+Before download or install : the easiest way to use this is to get the teleport board 
+in-world (hop://speculoos.world:8002:Lab) and ask us to include your calendar in 
+[2do.directory](https://2do.directory/).
 
-To use the events board on your grid, the easiest way is to ask us to include your calendar in [2do.directory](https://2do.directory/).
+Aggregator is a tool to fetch events from various sources and export them 
+on several format, for use by 2do Board and other applications related with
+2do Events project.
+
+It will export
+
+- events.lsl2   - for current versions of 2do-board
+- events.json   - compatible with events parser (in w4os and Flexible Helper Scripts)
+- events.ics    - iCalendar format, compatible with web, mobile and desktop calendars
+- static html web page
+- events.lsl    - old format for 2do-board, actually only a deprecation notice
+
+This is a side PHP application intended to provide the same functionality as 2do-server,
+the original events fetcher of 2do project and the original HYPEvents code, but in a
+more modular and maintainable way, compatible with other tools of the 2do Events project.
+
+- 2do-board: the in-world board to display the calendar
+
+For grid owners :
+- [W4OS](https://w4os.org): a WordPress plugin to manage OpenSimulator grids and provide external helpers, including 2do Events
+- [Flexible Helper Scripts](https://github.com/GuduleLapointe/flexible_helper_scripts): a standalione collection of scripts providing the same helpers, without the web interface
+
 
 ## Getting started (recommended)
 

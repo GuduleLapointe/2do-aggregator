@@ -19,7 +19,7 @@ class HYPEvents_Exporter {
     }
 
     public function export() {
-        $output = AGGREGATOR_VERSION . "\n";
+        $output = BOARD_VER . "\n";
 
         $prev_day = '';
         $today = date('l F j');

@@ -91,6 +91,7 @@ class Aggregator {
      */
     private static function constants() {
         define( 'AGGREGATOR_VERSION', '2.0.0-dev' );
+        define( 'BOARD_VER', '1.5.5' );
         
         define('BASE_DIR', __DIR__);
 

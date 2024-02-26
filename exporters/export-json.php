@@ -68,12 +68,8 @@ class JSON_Exporter {
                 'hgurl' => $event->simname,
                 'hash' => $event->hash,
                 'categories' => $event->category,
-                'tags' => array_filter(array_merge(
-                    array(
-                        empty($event->source) ? null : "source-$event->source",
-                    ),
-                    $event->tags,
-                )),
+                'tags' => $event->tags,
+                'source' => $event->source,
             );
         }
 
@@ -82,7 +78,7 @@ class JSON_Exporter {
 
         $result = file_put_contents($this->output_dir . '/events.json', $output);
         if( $result != false ) {
-            Aggregator::admin_notice("saved " . $this->output_dir . '/events.json');
+            Aggregator::notice("exported " . $this->output_dir . '/events.json');
         } else {
             Aggregator::admin_notice("Error writing " . $this->output_dir . '/events.json', 1, true);
         }

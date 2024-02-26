@@ -62,6 +62,7 @@ class Aggregator {
         // Write events to file
         new HYPEvents_Exporter($fetcher->get_events(), $this->output_dir);
         new JSON_Exporter($fetcher->get_events(), $this->output_dir);
+        new iCal_Exporter($fetcher->get_events(), $this->output_dir);
     }
 
     /**
@@ -86,6 +87,7 @@ class Aggregator {
         // Exporters
         require_once APP_DIR . '/exporters/export-hypevents.php';
         require_once APP_DIR . '/exporters/export-json.php';
+        require_once APP_DIR . '/exporters/export-ical.php';
     }
 
     /**

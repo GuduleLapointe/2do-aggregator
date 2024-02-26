@@ -8,3 +8,5 @@ vendor/
 test/
 output/
 dev/
+templates/*.min.js
+templates/*.min.css

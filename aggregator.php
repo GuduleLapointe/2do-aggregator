@@ -63,6 +63,7 @@ class Aggregator {
         new HYPEvents_Exporter($fetcher->get_events(), $this->output_dir);
         new JSON_Exporter($fetcher->get_events(), $this->output_dir);
         new iCal_Exporter($fetcher->get_events(), $this->output_dir);
+        new HTML_Exporter($fetcher->get_events(), $this->output_dir);
     }
 
     /**
@@ -88,6 +89,7 @@ class Aggregator {
         require_once APP_DIR . '/exporters/export-hypevents.php';
         require_once APP_DIR . '/exporters/export-json.php';
         require_once APP_DIR . '/exporters/export-ical.php';
+        require_once APP_DIR . '/exporters/export-html.php';
     }
 
     /**
@@ -96,7 +98,7 @@ class Aggregator {
      * Define constants for the application
      */
     private static function constants() {
-        define( 'AGGREGATOR_VERSION', '0.1.2-dev' );
+        define( 'AGGREGATOR_VERSION', '0.1.3-dev' );
         define( 'BOARD_VER', '1.5.5' );
         
         define('APP_DIR', __DIR__);

@@ -1,5 +1,11 @@
 ## Changelog
 
+Unreleased changes
+- minified json
+
+v0.1.2-dev
+* added iCal export format
+
 v0.1.1-dev
 * added json format export
 
@@ -8,3 +14,4 @@ v0.1.0-dev-2
 * functional ics import
 * functional hypevents export
 * base classes for general import/export tasks
+

@@ -73,7 +73,9 @@ class JSON_Exporter {
             );
         }
 
-        $output = json_encode($events_array, JSON_PRETTY_PRINT);
+        // json_encode minified
+        $output = json_encode($events_array);
+        // $output = json_encode($events_array, JSON_PRETTY_PRINT);
 
         $result = file_put_contents($this->output_dir . '/events.json', $output);
         if( $result != false ) {

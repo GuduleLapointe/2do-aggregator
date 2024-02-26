@@ -30,15 +30,12 @@ class HYPEvents_Exporter {
 
             $name = $event->name;
             // make sure name is converted to utf8 if not already
-            if( !mb_detect_encoding($name, 'UTF-8', true) ) {
+            if (!mb_detect_encoding($name, 'UTF-8', true)) {
                 $name = utf8_encode($name);
             }
             // Transliterating name to ASCII
-            // $name = preg_replace('/[\x{1F600}-\x{1F6FF}]/u', '', $event->name);
             $name = Aggregator::remove_emoji($name);
-            // $name = iconv('UTF-8', 'ASCII//TRANSLIT', utf8_encode($name));
-            $name = iconv('UTF-8', 'ASCII//TRANSLIT', $name);
-            // Remove any remaining non-ASCII characters (icons, etc.)
+            $name = iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $name);
             if( empty($name) ) {
                 continue;
             }

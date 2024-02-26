@@ -89,6 +89,9 @@ class Event {
         $tags = array_filter($tags);
         $tags = array_unique( $tags );
 
+        // Sanitize $data['description'], replace "\n" with actual new lines, trim trailing spaces and new lines
+        $data['description'] = trim( str_replace( "\\n", PHP_EOL, $data['description'] ) );
+
         // TODO: generate uid if not present (for other sources than iCal)
         $this->uid = $data['uid'];
         $this->owneruuid = $data['owneruuid'];

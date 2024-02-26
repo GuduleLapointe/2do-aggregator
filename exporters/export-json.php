@@ -40,7 +40,8 @@ class JSON_Exporter {
             $begin = new DateTime($event->dateUTC, new DateTimeZone('UTC'));
             // $begin->setTimezone(new DateTimeZone('America/Los_Angeles'));
             
-            $end = new DateTime();
+            // calculate set $end as DateTime based on $end_stamp
+            $end = new DateTime("@$end_stamp", new DateTimeZone('UTC'));
             // $end->setTimestamp($end_stamp);
             // $end->setTimezone(new DateTimeZone('America/Los_Angeles'));
 

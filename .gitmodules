@@ -1,6 +1,6 @@
 [submodule "helpers"]
-	path = src/helpers
+	path = dev/helpers
 	url = https://github.com/GuduleLapointe/flexible_helper_scripts.git
 [submodule "2do-server"]
-	path = src/2do-server
+	path = dev/2do-server
 	url = https://github.com/GuduleLapointe/2do-server.git

@@ -48,6 +48,9 @@ fetch('events.json')
             const startLA = startDate.toLocaleString('en-US', options);
             const endLA = endDate.toLocaleString('en-US', options);
 
+            event.description = event.description.replace('/<br>\n/g', '\n');
+            event.description = event.description.replace(/\n/g, '<br>\n');
+
             eventElement.innerHTML = `
                 <h2>${event.title}</h2>
                 <p>${startLA} <span class=duration>(${durationNL})</span></p>

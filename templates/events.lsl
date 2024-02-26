@@ -1,7 +1,7 @@
 This board is outdated
 00:00AM
 speculoos.world:8002:Lab
-Get a new one on
+Pick a new one at
 00:00AM
 speculoos.world:8002:Lab
 Speculoos Lab region

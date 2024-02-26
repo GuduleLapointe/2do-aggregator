@@ -1,17 +1,28 @@
 ## Changelog
 
-Unreleased changes
-- minified json
+0.1.3-dev-2
+* added json format export
+* added matthiasmullie/minify library
+* fix wrong type for empty tags
+* fix iconv(): Detected an illegal character in input string
+* fix wrong end date in json export
+* fix $array typo
+* fix version
+* include saved files in output
+* don't include source in event tags
+* disambiguation, renamed  categories as tags, to differientiate from OS/SL events category
+* mv src/2do-server src/helpers dev/
+* don't encode  to utf8 if it is already the good format
+* minified json
 
-v0.1.2-dev
+0.1.2-dev
 * added iCal export format
 
-v0.1.1-dev
+0.1.1-dev
 * added json format export
 
-v0.1.0-dev-2
+0.1.0-dev-2
 * more a proof of concept than a producion-ready app
 * functional ics import
 * functional hypevents export
 * base classes for general import/export tasks
-

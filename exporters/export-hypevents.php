@@ -70,7 +70,7 @@ class HYPEvents_Exporter {
 
         $result = file_put_contents($this->output_dir . '/events.lsl2', $output);
         if( $result != false ) {
-            Aggregator::admin_notice("saved " . $this->output_dir . '/events.lsl2');
+            Aggregator::notice("exported " . $this->output_dir . '/events.lsl2');
         } else {
             Aggregator::admin_notice("Error writing " . $this->output_dir . '/events.lsl2', 1, true);
         }

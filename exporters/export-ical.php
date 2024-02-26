@@ -70,7 +70,7 @@ class iCal_Exporter {
 
         $result = file_put_contents($this->output_dir . '/events.ics', $output);
         if( $result != false ) {
-            Aggregator::admin_notice("saved " . $this->output_dir . '/events.ics');
+            Aggregator::notice("exported " . $this->output_dir . '/events.ics');
         } else {
             Aggregator::admin_notice("Error writing " . $this->output_dir . '/events.ics', 1, true);
         }

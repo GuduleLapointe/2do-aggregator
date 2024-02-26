@@ -24,15 +24,15 @@ class HTML_Exporter {
     public function export() {
         // DEBUG copy original styles and js to output
         copy(APP_DIR . '/templates/styles.css', $this->output_dir . '/styles.css'); 
-        copy(APP_DIR . '/templates/events.js', $this->output_dir . '/events.js');
+        copy(APP_DIR . '/templates/script.js', $this->output_dir . '/script.js');
 
         // Minify CSS
         $css = new Minify\CSS(APP_DIR . '/templates/styles.css');
         $css->minify(APP_DIR . '/templates/styles.min.css');
 
         // Minify JS
-        $js = new Minify\JS(APP_DIR . '/templates/events.js');
-        $js->minify(APP_DIR . '/templates/events.min.js');
+        $js = new Minify\JS(APP_DIR . '/templates/script.js');
+        $js->minify(APP_DIR . '/templates/script.min.js');
 
         $result = copy(APP_DIR . '/templates/index.html', $this->output_dir . '/index.html');
         if($result !== false) Aggregator::notice("updated " . $this->output_dir . '/index.html');
@@ -43,8 +43,8 @@ class HTML_Exporter {
         if($result !== false) Aggregator::notice("updated " . $this->output_dir . '/styles.min.css');
         else Aggregator::admin_notice("Error $result writing " . $this->output_dir . '/styles.min.css', 1, true);
 
-        $result = copy(APP_DIR . '/templates/events.min.js', $this->output_dir . '/events.min.js');
-        if($result !== false) Aggregator::notice("updated " . $this->output_dir . '/events.min.js');
+        $result = copy(APP_DIR . '/templates/script.min.js', $this->output_dir . '/script.min.js');
+        if($result !== false) Aggregator::notice("updated " . $this->output_dir . '/script.min.js');
         else Aggregator::admin_notice("Error $result writing " . $this->output_dir . '/index.html', 1, true);
     }
 }

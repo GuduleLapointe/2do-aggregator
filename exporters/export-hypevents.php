@@ -26,7 +26,7 @@ class HYPEvents_Exporter {
 
         foreach ($this->events as $event) {
             // copy templates/events.lsl to output_dir
-            copy('templates/events.lsl', $this->output_dir . '/events.lsl');
+            copy(APP_DIR . '/templates/events.lsl', $this->output_dir . '/events.lsl');
 
             $name = $event->name;
             // Transliterating name to ASCII

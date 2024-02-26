@@ -80,10 +80,14 @@ class Event {
         $data['simname'] = $sanitized_url;
 
         $tags = $data['tags'];
-        if(!is_array($tags)) {
+        if(empty($tags)) {
+            $tags = array();
+        } else if(!is_array($tags)) {
             $tags = array($tags);
         }
-        $tags = array_unique( array_merge ( $tags, array( $calendar['slug'] ) ) );
+        // $tags = array_unique( array_merge ( $tags, array( $calendar['slug'] ) ) );
+        $tags = array_filter($tags);
+        $tags = array_unique( $tags );
 
         // TODO: generate uid if not present (for other sources than iCal)
         $this->uid = $data['uid'];

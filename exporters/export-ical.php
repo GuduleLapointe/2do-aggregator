@@ -61,7 +61,7 @@ class iCal_Exporter {
             $vevent->setDescription($event->description);
             $vevent->setLocation($event->simname);
             $vevent->setUrl(opensim_format_tp($event->simname, TPLINK_HOP));
-            $vevent->setCategories(join(',', array_filter($event->categories)));
+            $vevent->setCategories(join(',', array_filter($event->tags)));
 
             $vcalendar->setComponent($vevent);
         }

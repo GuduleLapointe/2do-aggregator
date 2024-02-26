@@ -66,16 +66,18 @@ class JSON_Exporter {
                 'description' => $event->description,
                 'hgurl' => $event->simname,
                 'hash' => $event->hash,
-                'categories' => array_filter(array(
-                    $event->source,
-                    $event->category,
+                'categories' => $event->category,
+                'tags' => array_filter(array_merge(
+                    array(
+                        empty($event->source) ? null : "source-$event->source",
+                    ),
+                    $event->tags,
                 )),
             );
         }
 
-        // json_encode minified
-        $output = json_encode($events_array);
-        // $output = json_encode($events_array, JSON_PRETTY_PRINT);
+        // $output = json_encode($events_array);
+        $output = json_encode($events_array, JSON_PRETTY_PRINT);
 
         $result = file_put_contents($this->output_dir . '/events.json', $output);
         if( $result != false ) {

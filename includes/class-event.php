@@ -79,11 +79,11 @@ class Event {
         }
         $data['simname'] = $sanitized_url;
 
-        $categories = $data['categories'];
-        if(!is_array($categories)) {
-            $categories = array($categories);
+        $tags = $data['tags'];
+        if(!is_array($tags)) {
+            $tags = array($tags);
         }
-        $categories = array_unique( array_merge ( $categories, array( $calendar['slug'] ) ) );
+        $tags = array_unique( array_merge ( $tags, array( $calendar['slug'] ) ) );
 
         // TODO: generate uid if not present (for other sources than iCal)
         $this->uid = $data['uid'];
@@ -91,7 +91,7 @@ class Event {
         $this->name = $data['name'];
         $this->creatoruuid = $data['creatoruuid'];
         $this->category = $data['category'];            // OpenSim/SL category code
-        $this->categories = $categories;                // Array of category names
+        $this->tags = $tags;                // Array of category names
         $this->description = $data['description'];
         $this->dateUTC = $data['dateUTC'];
         $this->duration = $data['duration'];

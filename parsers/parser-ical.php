@@ -129,7 +129,7 @@ foreach ($vevents as $yearlyEvents) {
                 
                 $dateUTC = $dtstart->setTimezone(new DateTimeZone('UTC'))->format('Y-m-d\TH:i:sP');
 
-                $categories = $vevent->getCategories();
+                $tags = $vevent->getCategories();
 
                 $event = array(
                     'source_url' => $url,
@@ -141,8 +141,8 @@ foreach ($vevents as $yearlyEvents) {
                     // 'owneruuid' => null, // Not implemented
                     // 'creatoruuid' => null, // Not implemented
                     'name' => $vevent->getSummary(),
-                    'category' => $categories,
-                    'categories' => $categories,
+                    'category' => $tags,
+                    'tags' => $tags,
                     'description' => $vevent->getDescription(),
                     // 'covercharge' => 0, // Not implemented
                     // 'coveramount' => 0, // Not implemented

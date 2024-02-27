@@ -1,6 +1,6 @@
 {
   "name": "2do-aggregator",
-  "version": "0.1.3-dev-3",
+  "version": "0.1.3",
   "description": "PHP port of 2do-server, collects calendars from several sources and make them available under different formats ffor 2do-events, ics, json...",
   "main": "src/index.js",
   "scripts": {

@@ -1,5 +1,14 @@
 ## Changelog
 
+0.1.3
+* pretty functional version
+* import iCal (.ics) calendars
+* export json (for events parser helper and web page)
+* export hypevents format (extra light for 2do boards and lsl scripts)
+* export iCal (.ics) for use with any calendar software
+* export HTML, a basic web page with the calendar, with adjustable timezone
+* responsive layout
+
 0.1.3-dev-3
 * added disclaimer to the web page
 * added teleport links on the web page

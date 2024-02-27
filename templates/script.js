@@ -100,6 +100,20 @@ $(select).select2().on('change', function() {
 });
 
 /**
+ * Display a real time clock for America/Los_Angeles timezone
+ */
+function updateClock() {
+    const slTimeElement = document.querySelector('#sltime');
+    setInterval(() => {
+        const time = moment().tz('America/Los_Angeles').format('MMM D, YYYY hh:mm:ss A');
+        slTimeElement.innerHTML = time;
+    }, 1000);
+}
+
+// Appeler la fonction pour démarrer l'horloge
+updateClock();
+
+/**
  * Fetch and display events
  */
 function refreshCalendar(timeZone) {

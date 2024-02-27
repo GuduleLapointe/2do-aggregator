@@ -74,7 +74,7 @@ _Why outside the website directory? This is a script intended to be run from ter
 
 Copy config/ical.gfg.example and add your calendar sources.
   ```bash
-  cp config/ical.cfg.example config/ical.cfg
+  cp config/sources.csv.example config/sources.csv
   ```
 
 ## Calendar conventions

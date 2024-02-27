@@ -24,12 +24,12 @@ class Fetcher {
         // print_r($this->events);
     }
     
-    private function read_config_ical( $config = APP_DIR . '/config/ical.cfg' ) {
+    private function read_config_ical( $config = APP_DIR . '/config/sources.csv' ) {
         Aggregator::admin_notice("Reading $config");
         if( ! file_exists($config) ) {
-            // throw new Exception('ical.cfg not found');
-            echo "Copy config/ical.cfg.example as $config and adjust to your taste before running this script.\n\n";
-            Aggregator::admin_notice("ical.cfg not found, aborting.", 1, true);
+            // throw new Exception('sources.csv not found');
+            echo "Copy config/sources.csv.example as $config and adjust to your taste before running this script.\n\n";
+            Aggregator::admin_notice("sources.csv not found, aborting.", 1, true);
         }
 
         $csv = file($config);

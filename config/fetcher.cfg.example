@@ -3,7 +3,7 @@
 # ignored. Lines beginning with "#" or ";" are ignored.
 
 # icalbulk must be enabled to process calendars in iCal format (ics). They are
-# configured in ical.cfg.
+# configured in sources.csv.
 icalbulk IcalBulk
 
 # Only calendars in custom format need their own entry here and a custom fetcher

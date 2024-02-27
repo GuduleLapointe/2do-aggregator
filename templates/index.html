@@ -13,20 +13,33 @@
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
     
     <script src="https://cdn.jsdelivr.net/npm/slugify@1.6.3/slugify.min.js"></script>
-    
+
+    <script src="https://kit.fontawesome.com/e6bdb1cdc2.js" crossorigin="anonymous"></script>
+
     <link rel="stylesheet" href="styles.css">
     <!-- <link rel="stylesheet" href="styles.min.css"> -->
+
+    <link rel="alternate" type="text/calendar" title="2do Calendar" href="events.ics">
 </head>
 <body>
     <header>
-        <h1><a href="./">2do Events</a></h1></h>
-        <nav>
+        <div id="branding" class="branding">
+            <h1 class="pagetitle"><a href="./">2do Events</a></h1></h>
+        </div>
+        <nav id="nav-main" class=main>
             <ul>
                 <li id="select-timezone">America/Los Angeles</li>
                 <li id="sltime-wrapper"><span class=label>Current in-world time</span> <span id="sltime">&nbsp;</span></li>
+                <!-- <li id="subscribe-links"> -->
+                <!-- </li> -->
                 <!-- <li id="select-category">All Categories</li>
                 <li id="select-tag">All Tags</li> -->
             </ul>
+        </nav>
+        <nav id="nav-secondary" class="secondary">
+            <a href="events.ics" title="Download the calendar" class="calendar-icon"><i class="fa-regular fa-calendar"></i></a>
+            <!-- add a rss unicode icon liked to rss feed -->
+            <a href="rss.xml" title="RSS feed" class="rss-icon"><i class="fa-solid fa-square-rss"></i></a>
         </nav>
     </header>
     <main>

@@ -244,13 +244,29 @@ function refreshCalendar(timeZone) {
 
 refreshCalendar(timeZone);
 
-window.addEventListener('scroll', function() {
-    const header = document.querySelector('header');
-    const sticky = header.offsetTop;
 
+/**
+ * Sticky header
+ * 
+ * included in css:
+ *  header {
+ *      position: sticky;
+ *      top: 0;
+ *  }
+ * 
+ *  .sticky {
+ *     background: pink;
+ *  } 
+ */
+const header = document.querySelector('header');
+const sticky = header.offsetTop;
+
+window.addEventListener('scroll', function() {
     if (window.pageYOffset > sticky) {
+        console.log('sticky');
         header.classList.add('sticky');
     } else {
+        console.log('not sticky');
         header.classList.remove('sticky');
     }
 });

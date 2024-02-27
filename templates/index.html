@@ -4,8 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>2do Events</title>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.33/moment-timezone-with-data.min.js"></script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
+    
     <link rel="stylesheet" href="styles.css">
     <!-- <link rel="stylesheet" href="styles.min.css"> -->
 </head>
@@ -14,16 +20,14 @@
         <h1>2do Events</h1></h>
         <nav>
             <ul>
-                <li id="select-timezone"><a href="#">America/Los Angeles</a></li>
-                <li id="select-category"><a href="#">Categories</a></li>
-                <li id="select-tag"><a href="#">Tags</a></li>
+                <li id="select-timezone">America/Los Angeles</li>
+                <li id="select-category">All Categories</li>
+                <li id="select-tag">All Tags</li>
             </ul>
         </nav>
     </header>
     <main>
         <div id="events-container"></div>
-        <script src="script.js"></script>
-        <!-- <script src="script.min.js"></script> -->
     </main>
     <footer>
         <p>
@@ -35,5 +39,7 @@
             Sponsored by <a href="https://speculoos.world">Speculoos World</a> and <a href="https://w4os.org/">W4OS</a>.
         </p>
     </footer>
+    <script src="script.js"></script>
+    <!-- <script src="script.min.js"></script> -->
 </body>
 </html>

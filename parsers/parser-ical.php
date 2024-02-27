@@ -98,7 +98,7 @@ foreach ($vevents as $yearlyEvents) {
                 if( ! empty($recurrence) ) {
                     $recurrence = $recurrence[1];
                 }
-
+                
                 if ($dtstart !== null) {
                     $dtstart = DateTime::createFromFormat('Y-m-d H:i:s e', $dtstart[1]);
                 } else {
@@ -154,7 +154,7 @@ foreach ($vevents as $yearlyEvents) {
                     // 'hash' => null, // Will be processed. by the main script
                 );
                 $events_count++;
-                $events[$uid] = $event;
+                $events[] = $event;
             }
         }
     }

@@ -113,6 +113,11 @@ function updateClock() {
 // Appeler la fonction pour démarrer l'horloge
 updateClock();
 
+
+function toSlug(text) {
+    return window.slugify(text, { lower: true, strict: true });
+}
+
 /**
  * Fetch and display events
  */
@@ -162,13 +167,17 @@ function refreshCalendar(timeZone) {
 
         Object.keys(eventsByWeek).forEach(weekNumber => {
             const weekElement = document.createElement('div');
-            // weekElement.innerHTML = `<h2>Week ${weekNumber}</h2>`;
-
+            weekElement.id = `week-${weekNumber}`;
+            weekElement.classList.add('week');
+            
             Object.keys(eventsByWeek[weekNumber]).forEach(day => {
                 const dayElement = document.createElement('div');
-    
-                // Créez une nouvelle date à partir de la chaîne de date
                 const dateObject = new Date(day);
+                dayElement.id = `day-${day}`;
+                const dayOfWeek = dateObject.toLocaleDateString('fr-FR', { weekday: 'long' });
+                dayElement.classList.add('day', `day-${toSlug(dayOfWeek)}`);
+
+                // Créez une nouvelle date à partir de la chaîne de date
 
                 // Formatez la date au format long
                 const longDate = dateObject.toLocaleDateString(undefined, { dateStyle: 'full' });
@@ -178,15 +187,18 @@ function refreshCalendar(timeZone) {
                 
                 dayElement.innerHTML = `
                     <h3>
-                        <span>${weekday}</span>
-                        <span>${date}</span>
-                        <span>${month}</span>
-                        <span>${year}</span>
+                        <span class=date-weekday>${weekday}</span>
+                        <span class=date-day>${date}</span>
+                        <span class=date-month>${month}</span>
+                        <span class=date-year>${year}</span>
                     </h3>
                 `;
 
                 eventsByWeek[weekNumber][day].forEach(event => {
                     const eventElement = document.createElement('div');
+                    eventElement.id = `event-${event.hash}`;
+                    eventElement.classList.add('event', ...event.tags.map(tag => `tag-${toSlug(tag)}`));
+                                    
                     const options = { hour: 'numeric', minute: 'numeric' };
                     const startLA = new Date(event.start).toLocaleString(undefined, { timeZone, hour: 'numeric', minute: 'numeric' });
                     const endLA = new Date(event.end).toLocaleString(undefined, { timeZone, hour: 'numeric', minute: 'numeric' });
@@ -194,10 +206,10 @@ function refreshCalendar(timeZone) {
                     // const duration = new Date(event.end) - new Date(event.start);
 
                     eventElement.innerHTML = `
-                        <h4>${event.title}</h4>
-                        <p>${startLA} - ${endLA}</p>
-                        <p>${event.description}</p>
-                        <p>${event.tags}</p>
+                        <h4 class=title>${event.title}</h4>
+                        <p class=time><span class=start>${startLA}</span> <span class=end>${endLA}</span></p>
+                        <p class=description>${event.description}</p>
+                        <p class=tags>${event.tags}</p>
                     `;
                     dayElement.appendChild(eventElement);
                 });

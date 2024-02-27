@@ -70,6 +70,7 @@ class JSON_Exporter {
                 'categories' => $event->category,
                 'tags' => $event->tags,
                 'source' => $event->source,
+                'teleport' => $event->teleport,
             );
         }
 

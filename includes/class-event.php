@@ -45,6 +45,8 @@ class Event {
     public $eventflags;
     public $gatekeeperURL;
     public $hash;
+    public $source;
+    public $teleport;
 
     /**
      * Event constructor.
@@ -112,6 +114,11 @@ class Event {
         // eventlist.py:        new_hash = hashlib.md5( str(event_start) + hgurl ).hexdigest()
         $this->hash = md5( $this->dateUTC . $this->simname );
         $this->source = $calendar['slug'];
+        $this->teleport = array(
+            'HOP' => opensim_format_tp($this->simname, TPLINK_HOP),
+            'HG' => opensim_format_tp($this->simname, TPLINK_HG),
+            'V3HG' => opensim_format_tp($this->simname, TPLINK_V3HG),
+        );
     }
 
     /**

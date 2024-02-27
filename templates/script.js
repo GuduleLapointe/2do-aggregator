@@ -176,7 +176,12 @@ function refreshCalendar(timeZone) {
                 dayElement.id = `day-${day}`;
                 const dayOfWeek = dateObject.toLocaleDateString('fr-FR', { weekday: 'long' });
                 dayElement.classList.add('day', `day-${toSlug(dayOfWeek)}`);
-
+                // add "today" class if day is today
+                const now = new Date();
+                if (now.toISOString().split('T')[0] === day) {
+                    dayElement.classList.add('today');
+                }
+                
                 // Créez une nouvelle date à partir de la chaîne de date
 
                 // Formatez la date au format long
@@ -198,19 +203,30 @@ function refreshCalendar(timeZone) {
                     const eventElement = document.createElement('div');
                     eventElement.id = `event-${event.hash}`;
                     eventElement.classList.add('event', ...event.tags.map(tag => `tag-${toSlug(tag)}`));
-                                    
+                    // add "ongoing" class if event is ongoing
+                    const now = new Date();
+                    if (now >= new Date(event.start) && now <= new Date(event.end)) {
+                        eventElement.classList.add('ongoing');
+                    }
+
                     const options = { hour: 'numeric', minute: 'numeric' };
                     const startLA = new Date(event.start).toLocaleString(undefined, { timeZone, hour: 'numeric', minute: 'numeric' });
                     const endLA = new Date(event.end).toLocaleString(undefined, { timeZone, hour: 'numeric', minute: 'numeric' });
 
                     // const duration = new Date(event.end) - new Date(event.start);
-
+                    
+                    const teleportLinks = Object.entries(event.teleport)
+                    .map(([key, value]) => `<a class="tplink" href="${value}" target="_blank">${key}</a>`)
+                    .join(' ');
+                    
                     eventElement.innerHTML = `
                         <h4 class=title>${event.title}</h4>
                         <p class=time><span class=start>${startLA}</span> <span class=end>${endLA}</span></p>
                         <p class=description>${event.description}</p>
+                        <p class=teleport>${event.hgurl} <span class=tplinks>${teleportLinks}</span></p>
                         <p class=tags>${event.tags}</p>
                     `;
+
                     dayElement.appendChild(eventElement);
                 });
 

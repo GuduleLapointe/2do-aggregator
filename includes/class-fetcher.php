@@ -44,8 +44,17 @@ class Fetcher {
             if (empty($line) || $line[0] == '#' || $line[0] == ';' || ctype_space($line) ) {
                 continue;
             }
-            #ignore lines that don't contain less than two comma
+            
+            // Treat lines with less than 2 commas as a custom calendars
             if (substr_count($line, ',') < 2) {
+                if(substr_count($line, ',') == 1) {
+                    list($slug, $grid_url) = explode(',', $line);
+                } else {
+                    $slug = $line;
+                    $grid_url = '';
+                }
+                Aggregator::admin_notice("Custom calendar $slug $grid_url");
+                $this->custom[$slug] = $line;
                 continue;
             }
             

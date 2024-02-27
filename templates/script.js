@@ -32,9 +32,10 @@ function durationNaturalLanguage(duration) {
 }
 
 function getUniqueWeekNumber(d) {
-    const referenceDate = new Date('1970-01-01');
+    // Start from 1970-01-05 which is a monday
+    const referenceDate = new Date('1970-01-05');
     const days = Math.floor((d - referenceDate) / (1000 * 60 * 60 * 24));
-    return Math.floor(days / 7);
+    return Math.ceil(days / 7);
 }
 
 var timeZone = 'America/Los_Angeles'; // OpenSimulator/SL Time

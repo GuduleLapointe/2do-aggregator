@@ -37,15 +37,78 @@ function getUniqueWeekNumber(d) {
     return Math.floor(days / 7);
 }
 
-const timeZone = 'America/Los_Angeles';
+var timeZone = 'America/Los_Angeles'; // OpenSimulator/SL Time
+
+/**
+ * Build time zone selector
+ */
+
+// Obtenez l'élément avec l'ID #select-timezone
+const selectElement = document.querySelector('#select-timezone');
+
+// Effacez le contenu actuel de l'élément #select-timezone
+selectElement.innerHTML = '';
+
+// Créez un nouvel élément select
+const select = document.createElement('select');
+
+// Ajoutez l'option pour le fuseau horaire actuel
+let option = document.createElement('option');
+option.value = timeZone;
+option.text = 'OpenSim/SL Time';
+select.appendChild(option);
+
+// Obtenez le fuseau horaire de l'utilisateur
+const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+// Ajoutez l'option pour le fuseau horaire de l'utilisateur si différent du premier choix
+if (userTimeZone !== timeZone) {
+    option = document.createElement('option');
+    option.value = userTimeZone;
+    option.text = userTimeZone;
+    select.appendChild(option);
+}
+
+// Ajoutez des options pour d'autres fuseaux horaires
+// const timeZones = ['Europe/Paris', 'Asia/Tokyo', 'Australia/Sydney']; // Remplacez ceci par la liste des fuseaux horaires que vous voulez inclure
+const timeZones = moment.tz.names();
+
+for (const tz of timeZones) {
+    if (tz !== timeZone && tz !== userTimeZone) {
+        option = document.createElement('option');
+        option.value = tz;
+        option.text = tz;
+        select.appendChild(option);
+    }
+}
+
+// Ajoutez un gestionnaire d'événements change à l'élément select
+select.addEventListener('change', function() {
+    // Mettez à jour le fuseau horaire et rafraîchissez le calendrier
+    timeZone = this.value;
+    refreshCalendar(timeZone);
+});
+
+// Ajoutez l'élément select à l'élément #select-timezone
+selectElement.appendChild(select);
+$(select).select2();
+
+$(select).select2().on('change', function() {
+    // Mettez à jour le fuseau horaire et rafraîchissez le calendrier
+    timeZone = this.value;
+    refreshCalendar(timeZone);
+});
 
 /**
  * Fetch and display events
  */
+function refreshCalendar(timeZone) {
+    const eventsContainer = document.getElementById('events-container');
+    eventsContainer.innerHTML = ''; // Ajoutez cette ligne pour vider le conteneur d'événements
 
-fetch('events.json')
-.then(response => response.json())
-.then(events => {
+    fetch('events.json')
+    .then(response => response.json())
+    .then(events => {
         // Vérifiez que les données sont dans le format attendu
         if (!Array.isArray(events)) {
             throw new Error('Les données récupérées ne sont pas un tableau');
@@ -61,9 +124,11 @@ fetch('events.json')
 
             // const startDate = new Date(event.start).toLocaleString(undefined, { timeZone });
             // const endDate = new Date(event.end).toLocaleString(undefined, { timeZone });
-            const startDate = moment(event.start).tz(timeZone);
-            const endDate = moment(event.end).tz(timeZone);
-        
+            // const startDate = moment(event.start).tz(timeZone);
+            // const endDate = moment(event.end).tz(timeZone);
+            const startDate = moment(event.start).tz(timeZone).toDate();
+            const endDate = moment(event.end).tz(timeZone).toDate();
+
             const weekNumber = getUniqueWeekNumber(startDate);
         
             if (!eventsByWeek[weekNumber]) {
@@ -128,5 +193,11 @@ fetch('events.json')
 
             eventsContainer.appendChild(weekElement);
         });
+    })
+    .catch(error => {
+        // Gérez les erreurs ici
+        console.error('Erreur:', error);
     });
-    // <pre>${JSON.stringify(event, null, 2)}</pre>
+}
+
+refreshCalendar(timeZone);

@@ -12,7 +12,7 @@ body {
 }
 header > * {
 	margin: 0;
-	padding: 10px;
+	padding: 0;
 }
 #main {
 	padding: 20px;
@@ -54,6 +54,7 @@ header {
 	position: sticky;
 	top: 0;
 	background: white;
+    padding: 10px;
 	
 	display: grid;
 	grid-template-columns: 1fr 1fr;
@@ -61,11 +62,19 @@ header {
 	"branding secondary"
 	"main main";
 }
+
 header.sticky {
 	display: flex;
 	gap: 20px;
 	background: white;
 	z-index: 1;
+}
+
+header img.logo {
+    max-height: 1.5em;
+}
+header.sticky img.logo {
+    max-height: 1.0em;
 }
 
 #branding {
@@ -99,6 +108,10 @@ header.sticky {
     border: 1px solid #e7e7e7;
     border-radius: 5px;
 }
+header.sticky {
+    border-radius: 0;
+}
+
 header.sticky nav ul {
 	padding: 0;
 }

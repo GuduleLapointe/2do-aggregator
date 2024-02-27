@@ -34,17 +34,33 @@ class HTML_Exporter {
         $js = new Minify\JS(APP_DIR . '/templates/script.js');
         $js->minify(APP_DIR . '/templates/script.min.js');
 
-        $result = copy(APP_DIR . '/templates/index.html', $this->output_dir . '/index.html');
-        if($result !== false) Aggregator::notice("updated " . $this->output_dir . '/index.html');
-        else Aggregator::admin_notice("Error $result writing " . $this->output_dir . '/index.html', 1, true);
+        // following is a repeat of the same code, use a for loop from an array with the file names
+        $files = array(
+            'index.html',
+            'styles.min.css',
+            'script.min.js',
+            '2do-logo-trim.png',
+        );
+        foreach($files as $file) {
+            $result = copy(APP_DIR . '/templates/' . $file, $this->output_dir . '/' . $file);
+            if($result !== false) Aggregator::notice("updated " . $this->output_dir . '/' . $file);
+            else Aggregator::admin_notice("Error $result writing " . $this->output_dir . '/' . $file, 1, true);
+        }
+        // $result = copy(APP_DIR . '/templates/index.html', $this->output_dir . '/index.html');
+        // if($result !== false) Aggregator::notice("updated " . $this->output_dir . '/index.html');
+        // else Aggregator::admin_notice("Error $result writing " . $this->output_dir . '/index.html', 1, true);
 
-        // Copy minified files to output directory
-        $result = copy(APP_DIR . '/templates/styles.min.css', $this->output_dir . '/styles.min.css');
-        if($result !== false) Aggregator::notice("updated " . $this->output_dir . '/styles.min.css');
-        else Aggregator::admin_notice("Error $result writing " . $this->output_dir . '/styles.min.css', 1, true);
+        // // Copy minified files to output directory
+        // $result = copy(APP_DIR . '/templates/styles.min.css', $this->output_dir . '/styles.min.css');
+        // if($result !== false) Aggregator::notice("updated " . $this->output_dir . '/styles.min.css');
+        // else Aggregator::admin_notice("Error $result writing " . $this->output_dir . '/styles.min.css', 1, true);
 
-        $result = copy(APP_DIR . '/templates/script.min.js', $this->output_dir . '/script.min.js');
-        if($result !== false) Aggregator::notice("updated " . $this->output_dir . '/script.min.js');
-        else Aggregator::admin_notice("Error $result writing " . $this->output_dir . '/index.html', 1, true);
+        // $result = copy(APP_DIR . '/templates/script.min.js', $this->output_dir . '/script.min.js');
+        // if($result !== false) Aggregator::notice("updated " . $this->output_dir . '/script.min.js');
+        // else Aggregator::admin_notice("Error $result writing " . $this->output_dir . '/script.min.js', 1, true);
+
+        // $result = copy(APP_DIR . '/templates/2do-logo-trim.png', $this->output_dir . '/2do-logo-trim.png');
+        // if($result !== false) Aggregator::notice("updated " . $this->output_dir . '/2do-logo-trim.png');
+        // else Aggregator::admin_notice("Error $result writing " . $this->output_dir . '/2do-logo-trim.png', 1, true);
     }
 }

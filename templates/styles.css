@@ -2,22 +2,45 @@ body {
     font-family: Arial, sans-serif;
 }
 
+header a {
+    text-decoration: none;
+    color: inherit;
+}
+
 nav ul {
     list-style-type: none;
     display: flex;
-    flex-direction: row;
+    justify-content: space-between;
     gap: 10px;
     padding: 10px;
     margin: 0;
     background-color: #f2f2f2;
     border: 1px solid #e7e7e7;
     border-radius: 5px;
-    text-align: center;
+}
+
+#sltime-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: end;
+    align-items: end;
+}
+#sltime-wrapper #sltime {
+    font-size: 1em;
+    font-family: "Courier New", Courier, monospace;
+    font-family: "Menlo", "Consolas", "Liberation Mono", "DejaVu Sans Mono",  "Monaco", monospace, monospace;
+}
+
+
+
+#sltime-wrapper .label {
+    font-size: smaller;
+    opacity: 0.7;
 }
 
 footer {
     font-size: smaller;
-    
+
     padding: 10px;
     text-align: center;
     border-top: 1px solid gray;

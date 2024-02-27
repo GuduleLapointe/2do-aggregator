@@ -119,12 +119,18 @@ function toSlug(text) {
     return window.slugify(text, { lower: true, strict: true });
 }
 
+function updateStatus(message) {
+    const statusElement = document.querySelector('#notices');
+    statusElement.innerHTML = message;
+}
+
 /**
  * Fetch and display events
- */
+*/
 function refreshCalendar(timeZone) {
     const eventsContainer = document.getElementById('events-container');
-    eventsContainer.innerHTML = '<div class="status">Warming up the time machine... <i class="fas fa-spinner fa-spin"></i></div>';
+    eventsContainer.innerHTML = '';
+    updateStatus('Warming up the time machine... <i class="fas fa-spinner fa-spin"></i>');
 
     fetch('events.json')
     .then(response => response.json())
@@ -135,9 +141,7 @@ function refreshCalendar(timeZone) {
             throw new Error('Unable to read data source.');
         }
         // add div.status starting to read calendars, with a spinning wheel
-        const eventsContainer = document.getElementById('events-container');
-        eventsContainer.innerHTML = "<div class='status'>Reading calendars... <i class='fas fa-spinner fa-spin'></i></div>";
-        
+        updateStatus('Reading calendars... <i class="fas fa-spinner fa-spin"></i>');        
         const eventsByWeek = {};
         
         events.forEach(event => {
@@ -168,8 +172,8 @@ function refreshCalendar(timeZone) {
             eventsByWeek[weekNumber][day].push(event);
         });
         
-        eventsContainer.innerHTML = '';
-
+        updateStatus('Tidying up... <i class="fas fa-spinner fa-spin"></i>');
+        
         Object.keys(eventsByWeek).forEach(weekNumber => {
             const weekElement = document.createElement('div');
             weekElement.id = `week-${weekNumber}`;
@@ -188,7 +192,7 @@ function refreshCalendar(timeZone) {
                 }
                 
                 // Créez une nouvelle date à partir de la chaîne de date
-
+                
                 // Formatez la date au format long
                 const longDate = dateObject.toLocaleDateString(undefined, { dateStyle: 'full' });
                 
@@ -196,14 +200,14 @@ function refreshCalendar(timeZone) {
                 const [weekday, date, month, year] = longDate.split(' ');
                 
                 dayElement.innerHTML = `
-                    <h3>
-                        <span class=date-weekday>${weekday}</span>
-                        <span class=date-day>${date}</span>
-                        <span class=date-month>${month}</span>
-                        <span class=date-year>${year}</span>
-                    </h3>
+                <h3>
+                <span class=date-weekday>${weekday}</span>
+                <span class=date-day>${date}</span>
+                <span class=date-month>${month}</span>
+                <span class=date-year>${year}</span>
+                </h3>
                 `;
-
+                
                 eventsByWeek[weekNumber][day].forEach(event => {
                     const eventElement = document.createElement('div');
                     eventElement.id = `event-${event.hash}`;
@@ -213,11 +217,11 @@ function refreshCalendar(timeZone) {
                     if (now >= new Date(event.start) && now <= new Date(event.end)) {
                         eventElement.classList.add('ongoing');
                     }
-
+                    
                     const options = { hour: 'numeric', minute: 'numeric' };
                     const startLA = new Date(event.start).toLocaleString(undefined, { timeZone, hour: 'numeric', minute: 'numeric' });
                     const endLA = new Date(event.end).toLocaleString(undefined, { timeZone, hour: 'numeric', minute: 'numeric' });
-
+                    
                     // const duration = new Date(event.end) - new Date(event.start);
                     
                     const teleportLinks = Object.entries(event.teleport)
@@ -225,21 +229,23 @@ function refreshCalendar(timeZone) {
                     .join(' ');
                     
                     eventElement.innerHTML = `
-                        <h4 class=title>${event.title}</h4>
-                        <p class=time><span class=start>${startLA}</span> <span class=end>${endLA}</span></p>
-                        <p class=description>${event.description}</p>
-                        <p class=teleport>${event.hgurl} <span class=tplinks>${teleportLinks}</span></p>
-                        <p class=tags>${event.tags}</p>
+                    <h4 class=title>${event.title}</h4>
+                    <p class=time><span class=start>${startLA}</span> <span class=end>${endLA}</span></p>
+                    <p class=description>${event.description}</p>
+                    <p class=teleport>${event.hgurl} <span class=tplinks>${teleportLinks}</span></p>
+                    <p class=tags>${event.tags}</p>
                     `;
-
+                    
                     dayElement.appendChild(eventElement);
                 });
-
+                
                 weekElement.appendChild(dayElement);
             });
-
+            
             eventsContainer.appendChild(weekElement);
         });
+        // status finished processing
+        updateStatus('');
     })
     .catch(error => {
         // Gérez les erreurs ici

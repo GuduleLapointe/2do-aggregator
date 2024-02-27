@@ -124,47 +124,51 @@ function toSlug(text) {
  */
 function refreshCalendar(timeZone) {
     const eventsContainer = document.getElementById('events-container');
-    eventsContainer.innerHTML = ''; // Ajoutez cette ligne pour vider le conteneur d'événements
+    eventsContainer.innerHTML = '<div class="status">Warming up the time machine... <i class="fas fa-spinner fa-spin"></i></div>';
 
     fetch('events.json')
     .then(response => response.json())
     .then(events => {
+
         // Vérifiez que les données sont dans le format attendu
         if (!Array.isArray(events)) {
-            throw new Error('Les données récupérées ne sont pas un tableau');
+            throw new Error('Unable to read data source.');
         }
-
+        // add div.status starting to read calendars, with a spinning wheel
+        const eventsContainer = document.getElementById('events-container');
+        eventsContainer.innerHTML = "<div class='status'>Reading calendars... <i class='fas fa-spinner fa-spin'></i></div>";
+        
         const eventsByWeek = {};
-
+        
         events.forEach(event => {
             // Vérifiez que chaque événement a une propriété 'start'
             if (!event.hasOwnProperty('start')) {
                 throw new Error('Un événement n\'a pas de propriété \'start\'');
             }
-
+            
             // const startDate = new Date(event.start).toLocaleString(undefined, { timeZone });
             // const endDate = new Date(event.end).toLocaleString(undefined, { timeZone });
             // const startDate = moment(event.start).tz(timeZone);
             // const endDate = moment(event.end).tz(timeZone);
             const startDate = moment(event.start).tz(timeZone).toDate();
             const endDate = moment(event.end).tz(timeZone).toDate();
-
+            
             const weekNumber = getUniqueWeekNumber(startDate);
-        
+            
             if (!eventsByWeek[weekNumber]) {
                 eventsByWeek[weekNumber] = {};
             }
-
+            
             const day = startDate.toISOString().split('T')[0]; // Obtenez la date complète au format YYYY-MM-DD
-
+            
             if (!eventsByWeek[weekNumber][day]) {
                 eventsByWeek[weekNumber][day] = [];
             }
-
+            
             eventsByWeek[weekNumber][day].push(event);
         });
-
-        const eventsContainer = document.getElementById('events-container');
+        
+        eventsContainer.innerHTML = '';
 
         Object.keys(eventsByWeek).forEach(weekNumber => {
             const weekElement = document.createElement('div');

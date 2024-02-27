@@ -16,6 +16,8 @@ nav ul {
 }
 
 footer {
+    font-size: smaller;
+    
     padding: 10px;
     text-align: center;
     border-top: 1px solid gray;

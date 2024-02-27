@@ -31,33 +31,102 @@ function durationNaturalLanguage(duration) {
     return durationNL.trim();
 }
 
+function getUniqueWeekNumber(d) {
+    const referenceDate = new Date('1970-01-01');
+    const days = Math.floor((d - referenceDate) / (1000 * 60 * 60 * 24));
+    return Math.floor(days / 7);
+}
+
+const timeZone = 'America/Los_Angeles';
+
+/**
+ * Fetch and display events
+ */
+
 fetch('events.json')
-    .then(response => response.json())
-    .then(events => {
-        const eventsContainer = document.getElementById('events-container');
+.then(response => response.json())
+.then(events => {
+        // Vérifiez que les données sont dans le format attendu
+        if (!Array.isArray(events)) {
+            throw new Error('Les données récupérées ne sont pas un tableau');
+        }
+
+        const eventsByWeek = {};
+
         events.forEach(event => {
-            const eventElement = document.createElement('div');
+            // Vérifiez que chaque événement a une propriété 'start'
+            if (!event.hasOwnProperty('start')) {
+                throw new Error('Un événement n\'a pas de propriété \'start\'');
+            }
 
-            const startDate = new Date(event.start);
-            const endDate = new Date(event.end);
-            const duration = endDate - startDate;
-            const durationNL = durationNaturalLanguage(duration);
+            // const startDate = new Date(event.start).toLocaleString(undefined, { timeZone });
+            // const endDate = new Date(event.end).toLocaleString(undefined, { timeZone });
+            const startDate = moment(event.start).tz(timeZone);
+            const endDate = moment(event.end).tz(timeZone);
+        
+            const weekNumber = getUniqueWeekNumber(startDate);
+        
+            if (!eventsByWeek[weekNumber]) {
+                eventsByWeek[weekNumber] = {};
+            }
 
-            const options = { timeZone: 'America/Los_Angeles', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' };
+            const day = startDate.toISOString().split('T')[0]; // Obtenez la date complète au format YYYY-MM-DD
 
-            const startLA = startDate.toLocaleString('en-US', options);
-            const endLA = endDate.toLocaleString('en-US', options);
+            if (!eventsByWeek[weekNumber][day]) {
+                eventsByWeek[weekNumber][day] = [];
+            }
 
-            event.description = event.description.replace('/<br>\n/g', '\n');
-            event.description = event.description.replace(/\n/g, '<br>\n');
+            eventsByWeek[weekNumber][day].push(event);
+        });
 
-            eventElement.innerHTML = `
-                <h2>${event.title}</h2>
-                <p>${startLA} <span class=duration>(${durationNL})</span></p>
-                <p>${event.description}</p>
-                <p>${event.tags}</p>
-            `;
-            eventsContainer.appendChild(eventElement);
+        const eventsContainer = document.getElementById('events-container');
+
+        Object.keys(eventsByWeek).forEach(weekNumber => {
+            const weekElement = document.createElement('div');
+            // weekElement.innerHTML = `<h2>Week ${weekNumber}</h2>`;
+
+            Object.keys(eventsByWeek[weekNumber]).forEach(day => {
+                const dayElement = document.createElement('div');
+    
+                // Créez une nouvelle date à partir de la chaîne de date
+                const dateObject = new Date(day);
+
+                // Formatez la date au format long
+                const longDate = dateObject.toLocaleDateString(undefined, { dateStyle: 'full' });
+                
+                // Séparez la date en ses composants
+                const [weekday, date, month, year] = longDate.split(' ');
+                
+                dayElement.innerHTML = `
+                    <h3>
+                        <span>${weekday}</span>
+                        <span>${date}</span>
+                        <span>${month}</span>
+                        <span>${year}</span>
+                    </h3>
+                `;
+
+                eventsByWeek[weekNumber][day].forEach(event => {
+                    const eventElement = document.createElement('div');
+                    const options = { hour: 'numeric', minute: 'numeric' };
+                    const startLA = new Date(event.start).toLocaleString(undefined, { timeZone, hour: 'numeric', minute: 'numeric' });
+                    const endLA = new Date(event.end).toLocaleString(undefined, { timeZone, hour: 'numeric', minute: 'numeric' });
+
+                    // const duration = new Date(event.end) - new Date(event.start);
+
+                    eventElement.innerHTML = `
+                        <h4>${event.title}</h4>
+                        <p>${startLA} - ${endLA}</p>
+                        <p>${event.description}</p>
+                        <p>${event.tags}</p>
+                    `;
+                    dayElement.appendChild(eventElement);
+                });
+
+                weekElement.appendChild(dayElement);
+            });
+
+            eventsContainer.appendChild(weekElement);
         });
     });
-//                 <pre>${JSON.stringify(event, null, 2)}</pre>
+    // <pre>${JSON.stringify(event, null, 2)}</pre>

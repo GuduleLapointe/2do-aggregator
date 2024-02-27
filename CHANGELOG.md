@@ -1,5 +1,21 @@
 ## Changelog
 
+0.1.3-dev-3
+* added disclaimer to the web page
+* added teleport links on the web page
+* added real time SLTime clock
+* added timezone selector
+* added disclaimer to the web page
+* added teleport links on the web page
+* added real time SLTime clock
+* added basic HTML export
+* added timezone selector
+* fix new lines in description
+* renamed events.js as script.js
+* sticky header
+* updated disclaimer
+* responive events block display grouped by week and day
+
 0.1.3-dev-2
 * added json format export
 * added matthiasmullie/minify library

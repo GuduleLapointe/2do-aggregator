@@ -71,7 +71,6 @@ class Event {
             preg_match($pattern, $description, $matches);
             if (!empty($matches)) {
                 $data['simname'] = $matches[0];
-                Aggregator::notice($data['name'] . " event hgurl set from description: " . $data['simname'] );
             }
         }
 

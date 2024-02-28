@@ -17,22 +17,21 @@ on several format, for use by 2do Board and other applications related with
 
 Import formats:
 
-- [√] iCal (ics, iCalendar)
+- [x] iCal (ics, iCalendar)
 - Custom web parsers:
   - opensimworld
   - islandoasis
-  - kitely
   - thirdrock
-  - gridtalk
+  - gridtalk (?)
 
 Export formats:
 
-- [√] HYPEvent (legacy 2do/HYPEvent format)
-  - [√] events.lsl2 (for current versions of 2do-board)
-  - [√] events.lsl  (old format, now includes only a deprecation notice)
-- JSON (events.json) compatible with events parsers (provided by w4os or Flexible Helper Scripts)
-- iCal (events.ics) iCalendar format, compatible with web, mobile and desktop calendars
-- Static html web calendar page for standalone use
+- [x] HYPEvent (legacy 2do/HYPEvent format)
+  - [x] events.lsl2 (for current versions of 2do-board)
+  - [x] events.lsl  (old format, now includes only a deprecation notice)
+- [x] JSON (events.json) compatible with events parsers (provided by w4os or Flexible Helper Scripts)
+- [x] iCal (events.ics) iCalendar format, compatible with web, mobile and desktop calendars
+- [x] Light html web calendar page for standalone use
 
 This is a side PHP application intended to provide the same functionality as 2do-server, the original events fetcher of 2do project and the original HYPEvents code, but in a more modular and maintainable way, and with better integration with other tools of 2do Events, w4os and Flexiple Helper Scripts projects.
 

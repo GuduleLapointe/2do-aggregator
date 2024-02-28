@@ -27,8 +27,9 @@ header > * {
 	max-width: 100%;
 	margin: 0 auto;
 }
+#main #section-events,
 #main .wrapper > #events-container {
-	width: 100%;
+    width: 100%;
 }
 .wrapper > * > :first-child {
 	margin-top: 0;
@@ -44,6 +45,13 @@ body {
     font-family: Arial, sans-serif;
 }
 
+p {
+    display: block;
+    margin-block-start: 1em;
+    margin-block-end: 1em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+}
 
 header a {
     text-decoration: none;

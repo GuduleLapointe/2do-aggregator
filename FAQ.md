@@ -1,7 +1,3 @@
-# Potentially Obsolete Questions
-
-This is the initial project FAQ, it needs a review and some information could be outdated, but you might find some answers too. Once the transition from Python PHP is complete, I will check that.
-
 ## Disclaimer
 
 Feb. 27 2024. I am working on a new version of the 2do aggregation engine. I cannot handle anymore the old python engine; it used to take, several times a day, 30 minutes and 6 cores to process what should be an easy task.
@@ -14,22 +10,64 @@ Thank you for your patience.
 
     Gudule Lapointe
 
-## Where can I an an in-world version of this website?
+# Recommended usage
 
-The in-world 2D0 board can be found in Speculoos Lab region: speculoos.world:8002/Lab. It provides a beautiful list of ongoing and upcoming events, with ability to click to teleport to the event location.
+The easiest and more efficient way to enable events search in your grid is to use 2do Directory, the public calendar based on this application. It is the recommended way for hypergrid-enabled regions and grid, as it not only avoids the installation of additional software, but also allow to share events between grid.
 
-## How do I add my events to this directory?
+It provides places, land for sale and events search in-world from the viewer search feature. Places and land for sale are parsed regularly from your simulator(s). Events are fetched from 2do HYPEvents.
+
+## Enable in-world search on your region(s)
+
+To enable in-world search in your region without installing the web application:
+
+* Download [OpenSimSearch.Module.dll](https://github.com/GuduleLapointe/flexible_helper_scripts/tree/master/bin) and put it inside your OpenSimulator bin/ folder.
+* Add the following settings to each simulator `OpenSim.ini`. (replace "`Your Grid`" and "`yourgrid.org:8002`" with your own values)
+
+    _Note: Even for grids, this config goes in regions OpenSim.ini, not in Robust.ini._
+
+
+    ```ini
+    [Search]
+        SearchURL = "http://2do.directory/helpers/query.php?gk=http://yourgrid.org:8002"
+
+    [DataSnapshot]
+        index_sims = true
+        gridname = "Your Grid"
+        snapshot_cache_directory = "./DataSnapshot"
+        DATA_SRV_2do = http://2do.directory/helpers/register.php
+        ;; You can add multiple search engines
+        ;DATA_SRV_OtherEngine = http://example.org/helpers/register.py
+    ```
+
+* Restart the simulators
+
+## Add yoor events calendar to 2do Directory
 
 Send us an email at [dev@2do.pm](mailto:dev@2do.pm), with a link to the grid's event calendar! The easier format is iCal, but we can also build a custom scraper and parser for web-based event calendars.
 
 2DO Directory lists only events on hypergrid-enabled grids.
 
-## How do I add 2DO Directory events in my viewers search function?
+## Put a 2DO teleport board in your region(s)
 
-You can enable in-world event search for the viewer with helper scripts adapted for 2do/HYPEvents.
+The in-world 2D0 board can be found in Speculoos Lab region: `speculoos.world:8002/Lab`. It provides a beautiful list of ongoing and upcoming events, with ability to click to teleport to the event location.
 
-* Flexible Helper Scripts
-* w4os WordPress plugin, which includes these helpers along with tools to manage the grid
+You can also find the latest code on GitHub [GuduleLapointe/2do-board](https://github.com/GuduleLapointe/2do-board)
+
+
+# Standalone usage
+
+If your grid is not hypergrid-enabled or if you want to provide your own calendar, you can install the software on your servers, composed by
+
+* [2DO aggregator](https://github.com/GuduleLapointe/2do-aggregator) the parser, formatting calendars for use by in-world engines
+* A web helper required by OpenSimulator
+    * [Flexible Helper Scripts](https://github.com/GuduleLapointe/flexible_helper_scripts): helpers only, no web interface
+    * or [w4os](https://w4os.org/): a WordPress plugin including the helpers and a web management interface
+* [OpenSimSearch module](https://github.com/GuduleLapointe/flexible_helper_scripts/tree/master/bin)
+
+# Potentially Obsolete Questions
+
+
+This is the initial project FAQ, it needs a review and some information could be outdated, but you might find some answers too. Once the transition from Python PHP is complete, I will check that.
 
 ## How do you get the information for the listed events?
 
@@ -44,7 +82,7 @@ First of all, make sure the source data (event calendar, website) is correct. It
 Here are some guidelines to ensure most accurate listings:
 
 * Put the location information in the location field of your calendar software. 2DO events prefers hgurls (of the form 'hg.url.com:8002:Region Name'), but if you list local region names (of the form 'Region Name') 2DO events will be able to tag on the 'hg.url.com:8002:' part itself.
-Use a consistent form for the location information. For example, if you use local region names, make sure they are real region names and not something like 'The far end of the most beautiful Foobar region' but just 'Foobar'. If you use hop url's, use them consistently; don't mix 'Foobar/123/43/22' with 'Foobar (123,43,22)'.
+* Use a consistent form for the location information. For example, if you use local region names, make sure they are real region names and not something like 'The far end of the most beautiful Foobar region' but just 'Foobar'. If you use hop url's, use them consistently; don't mix 'Foobar/123/43/22' with 'Foobar (123,43,22)'.
 * Be consistent with timezones. 2DO events will parse times and timezones correctly, and represent the event times correctly in whatever timezone the user of 2DO events selects. But if you set the timezone of your calendar to, say, EDT (US/New York) but then put times in it that are grid times, you will confuse the parser and your events will likely be listed incorrectly. Don't do that (it will confuse your users as well!). Set the calendar to 'US/Pacific' (which is grid time) and then put in the events in grid time.
 * When the event moves to some other place, make sure to update the event on your grid event calendar. And to be sure that people can find your event even if they have the old time or location, put some kind of beacon that will hand out a landmark to the new location at the old location.
 
@@ -69,7 +107,7 @@ There are a number of options, in order of preference:
 
 If you have a web-designer who makes your website, pass along the above info and he/she should be able to structure the information for you.
 
-## Unstructered webpages
+## Unstructured webpages
 
 While it is possible to parse an unstructered webpage (where the event info is all in one element for example), it usually doesn't work well and breaks easily. For example, some grids have a completely free-form text-field to give all the event info with start and end times written in different forms. The hgurl will be part of the text, and sometimes is just a region name or a specific club without even listing the region name. 2DO events is unable to parse these pages.
 

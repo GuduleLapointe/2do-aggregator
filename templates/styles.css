@@ -83,7 +83,7 @@ header {
 	position: sticky;
 	top: 0;
 	background: var(--main-background);
-    padding: 10px;
+    padding: 20px;
 	
 	display: grid;
 	grid-template-columns: 1fr 1fr;

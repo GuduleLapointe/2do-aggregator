@@ -281,3 +281,21 @@ window.addEventListener('scroll', function() {
         header.classList.remove('sticky');
     }
 });
+
+
+/**
+ * Main menu
+ */
+
+document.querySelectorAll('nav li').forEach(function(menuItem) {
+    menuItem.addEventListener('click', function() {
+        // Cacher toutes les sections
+        document.querySelectorAll('section').forEach(function(section) {
+          section.style.display = 'none';
+        });
+    
+        // Afficher la section correspondante
+        var target = this.getAttribute('data-target');
+        document.getElementById(target).style.display = 'block';
+    });
+});

@@ -270,3 +270,15 @@ span.duration {
 .list-check textarea:disabled * {
 	color: color-mix(in hsl, canvastext 100%, canvas) !important;
 }
+
+section {
+    display: none;
+}
+
+#section-events {
+    display: block;
+}
+
+nav li.section {
+    cursor: pointer;
+}

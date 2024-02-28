@@ -287,7 +287,7 @@ window.addEventListener('scroll', function() {
  * Main menu
  */
 
-document.querySelectorAll('nav li').forEach(function(menuItem) {
+document.querySelectorAll('nav li.section').forEach(function(menuItem) {
     menuItem.addEventListener('click', function() {
         // Cacher toutes les sections
         document.querySelectorAll('section').forEach(function(section) {

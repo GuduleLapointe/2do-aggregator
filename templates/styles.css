@@ -1,7 +1,29 @@
+:root {
+    --main-color: black;
+    --main-background: white;
+    --border-color: #bbb;
+    --link-color: #888;
+    --highlight-color: #666;
+    --highlight-background: #ddd;
+    --today-color: green;
+    --today-background: var(--highlight-background);
+}
+
 body {
 	padding: 0;
 	margin: 0;
+    color: var(--main-color);
+    background: var(--main-background);
 }
+
+a,a:hover, a:active, a:visited {
+	color: var(--link-color);
+	text-decoration: none;
+}
+a:hover {
+	text-decoration: underline;
+}
+
 #page-wrapper {
 	position: absolute;
 	min-height: 100%;
@@ -60,7 +82,7 @@ header a {
 header {
 	position: sticky;
 	top: 0;
-	background: white;
+	background: var(--main-background);
     padding: 10px;
 	
 	display: grid;
@@ -73,7 +95,7 @@ header {
 header.sticky {
 	display: flex;
 	gap: 20px;
-	background: white;
+	background: var(--main-background);
 	z-index: 1;
 }
 
@@ -105,19 +127,21 @@ nav ul {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    vertical-align: center;
     gap: 10px;
 	margin: 0;
 }
 nav > ul > li {
-    /* flex: 1; */
+	margin: auto 0;
 }
 
 header:not(.sticky) nav ul,
 header.sticky {
     padding: 10px;
     margin: 0;
-    background-color: #f2f2f2;
-    border: 1px solid #e7e7e7;
+    color: var(--highlight-color);
+    background-color: var(--highlight-background);
+    border: 1px solid var(--border-color);
     border-radius: 5px;
 }
 header.sticky {
@@ -162,7 +186,7 @@ span.duration {
     margin: 10px 0;
 }
 .day {
-	border: solid 1px lightgray;
+	border: solid 1px var(--border-color);
 	border-radius: 5px;
 	
     flex: 1 0 100%;
@@ -176,7 +200,8 @@ span.duration {
 	padding-inline: 10px;
 }
 .day > h3 {
-	background: lightgray;
+	color: var(--highlight-color);
+	background: var(--highlight-background);
 	padding-block: 5px;
 	margin: 0;
 }
@@ -205,7 +230,7 @@ span.duration {
 }
 
 .event:not(:first-child) {
-	border-top: solid 1px gray;
+	border-top: solid 1px var(--border-color);
 }
 
 .event > * {
@@ -254,13 +279,6 @@ span.duration {
     vertical-align: middle;
 }
 
-.list-check input:disabled,
-.list-check textarea:disabled,
-.list-check input:disabled *,
-.list-check textarea:disabled * {
-	color: color-mix(in hsl, canvastext 100%, canvas) !important;
-}
-
 section {
     display: none;
 }
@@ -296,3 +314,16 @@ nav li.section {
 	}
 
 }
+
+@media (prefers-color-scheme: dark) { 
+    :root {
+        --main-color: #eee;
+        --main-background: #111;
+        --border-color: #444;
+	    --link-color: #aaa;
+	    --highlight-color: #ccc;
+        --highlight-background: #333;
+        --today-color: green;
+        --today-background: var(--highlight-background);
+    }
+} 

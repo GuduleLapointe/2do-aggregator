@@ -12,9 +12,9 @@ Thank you for your patience.
 
 # Recommended usage
 
-The easiest and more efficient way to enable events search in your grid is to use 2do Directory, the public calendar based on this application. It is the recommended way for hypergrid-enabled regions and grid, as it not only avoids the installation of additional software, but also allow to share events between grid.
+The easiest and more efficient way to enable events search in your grid is to use 2do Directory, the public calendar based on this application. It is the recommended way for hypergrid-enabled regions and grid, as not only it avoids the installation of additional software, but it also allows to share events between grids.
 
-It provides places, land for sale and events search in-world from the viewer search feature. Places and land for sale are parsed regularly from your simulator(s). Events are fetched from 2do HYPEvents.
+The directory provides places, land for sale and events search in-world from the viewer search feature. Places and land for sale are parsed regularly from your simulator(s).
 
 ## Enable in-world search on your region(s)
 

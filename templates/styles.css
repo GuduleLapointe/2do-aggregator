@@ -205,9 +205,10 @@ span.duration {
 	padding-block: 5px;
 	margin: 0;
 }
-.day > h3 > :first-child {
-    text-transform: capitalize;
+.day > h3::first-letter {
+    text-transform: uppercase;
 }
+
 
 /*.today, .today > h3 {
 	background: green;

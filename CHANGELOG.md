@@ -1,5 +1,13 @@
 ## Changelog
 
+0.1.4
+* added sections FAQ and Changelog to web page
+* added menu
+* fix responsive display and text wrapping for small devices
+* better checkbox display in lists
+* include readme in index.html
+* use minified json, css and js
+
 0.1.3
 * pretty functional version
 * import iCal (.ics) calendars

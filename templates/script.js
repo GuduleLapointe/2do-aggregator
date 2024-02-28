@@ -181,32 +181,21 @@ function refreshCalendar(timeZone) {
             
             Object.keys(eventsByWeek[weekNumber]).forEach(day => {
                 const dayElement = document.createElement('div');
-                const dateObject = new Date(day);
+
+                const dateObject = new Date(`${day}T00:00`);
                 dayElement.id = `day-${day}`;
-                const dayOfWeek = dateObject.toLocaleDateString('fr-FR', { weekday: 'long' });
-                dayElement.classList.add('day', `day-${toSlug(dayOfWeek)}`);
+
+                const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+                const formattedDate = dateObject.toLocaleDateString(undefined, options);
+
+                dayElement.classList.add('day', `day-${toSlug(formattedDate)}`);
                 // add "today" class if day is today
                 const now = new Date();
                 if (now.toISOString().split('T')[0] === day) {
                     dayElement.classList.add('today');
                 }
-                
-                // Créez une nouvelle date à partir de la chaîne de date
-                
-                // Formatez la date au format long
-                const longDate = dateObject.toLocaleDateString(undefined, { dateStyle: 'full' });
-                
-                // Séparez la date en ses composants
-                const [weekday, date, month, year] = longDate.split(' ');
-                
-                dayElement.innerHTML = `
-                <h3>
-                <span class=date-weekday>${weekday}</span>
-                <span class=date-day>${date}</span>
-                <span class=date-month>${month}</span>
-                <span class=date-year>${year}</span>
-                </h3>
-                `;
+
+                dayElement.innerHTML = `<h3>${formattedDate}</h3>`;
                 
                 eventsByWeek[weekNumber][day].forEach(event => {
                     const eventElement = document.createElement('div');

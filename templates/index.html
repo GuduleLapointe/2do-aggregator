@@ -34,8 +34,10 @@
             <nav id="nav-main" class=main>
                 <ul>
                     <li id="select-timezone">America/Los Angeles</li>
-                    <li class=section data-target="section-events">Events</li>
                     <li class=section data-target="readme">About</li>
+                    <li class=section data-target="events">Events</li>
+                    <li class=section data-target="faq">FAQ</li>
+                    <li class=section data-target="changelog">Changelog</li>
                     <li id="sltime-wrapper"><span class=label>Current in-world time</span> <span id="sltime">&nbsp;</span></li>
                     <!-- <li id="subscribe-links"> -->
                     <!-- </li> -->
@@ -50,39 +52,18 @@
             </nav>
         </header>
         <main id="main">
-            <section id="section-events">
+            <section id="readme"></section>
+            <section id="events">
                 <div class="wrapper">
-                    <div class="disclaimer">
-                        <p>
-                            <i>Feb. 27 2024></i>. I am working on a new version of the 2do aggregation engine. I cannot 
-                            handle anymore the old python engine; it used to take, several times a day, 
-                            30 minutes and 6 cores to process what should be an easy task.
-                        </p>
-                        <p>
-                            This is a complete rewrite, with a new design (you can already see below where  I want
-                            to go), new features, but, most  importantly, a very faster crawling process: it now
-                            takes less than 2 minutes instead of 30 and the cpu takes a nap instead of burning.
-                            I am very happy with the result.
-                        </p>
-                        <p>
-                            The bad side is that it takes time to rewrite all the specific import procedures. So,
-                            for now, the events are not as numerous as they used to be. I am working on it, and
-                            I hope to have a complete and stable version in a few days.
-                        </p>
-                        <p>
-                            Thank you for your patience.
-                            <br>
-                            Gudule Lapointe
-                        </p>
-                    </div>
-                    <div id="notices">It should start in a few seconds...</div>
+                    <aside class="disclaimer">
+                        <center>A transition is currently in progress. Please see the disclaimer in the FAQ section for more information.</center>
+                    </aside>
+                    <aside id="notices">It should start in a few seconds...</aside>
                 </div>
                 <div id="events-container"></div>
             </section>
-            <section id="readme">
-            </section>
-            <section id="changelog">
-            </section>
+            <section id="faq"></section>
+            <section id="changelog"></section>
         </main>
         <footer>
             <p>

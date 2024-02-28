@@ -39,27 +39,31 @@ class HTML_Exporter {
         $Parsedown = new Parsedown();
 
         // Lire et convertir le contenu du README
-        $text = file_get_contents( APP_DIR . '/README.md');
-        $html = $Parsedown->text($text);
-
+        
         // Charger le modèle de la page HTML
         $page = file_get_contents(APP_DIR . '/templates/index.html');
-
+        
         // Remplacer le contenu de la section 'readme' par le contenu du README
         // $page = str_replace('<section id="readme"></section>', '<section id="readme">' . $html . '</section>', $page);
         
-        $parsedown = array(
-            'README.md' => 'About',
-            'CHANGELOG.md' => 'Changelog',
-            'FAQ.md' => 'FAQ',
+        $md_files = array(
+            'README.md',
+            'CHANGELOG.md',
+            'FAQ.md',
         );
         
         $dom = new DOMDocument();
         libxml_use_internal_errors(true);
         $dom->loadHTML(mb_convert_encoding($page, 'HTML-ENTITIES', 'UTF-8'), LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
-
-        $section = $dom->getElementById('readme');
+        
+        foreach ($md_files as $md_file) {
+            $sectionId = strtolower(basename($md_file, '.md'));
+            $section = $dom->getElementById($sectionId);            
+            
         if ($section) {
+
+            $text = file_get_contents( APP_DIR . '/' . $md_file);
+            $html = $Parsedown->text($text);
             // Créer un nouveau DOMDocument pour le contenu du README
             $domForContent = new DOMDocument();
             $domForContent->loadHTML(mb_convert_encoding($html, 'HTML-ENTITIES', 'UTF-8'), LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
@@ -95,6 +99,11 @@ class HTML_Exporter {
 
             // Ajouter le wrapper à la section
             $section->appendChild($wrapper);
+
+            Aggregator::notice("section $sectionId updated with $md_file");
+        } else {
+            Aggregator::admin_notice("section $sectionId not found for $md_file", 1);
+        }
         }
 
         $page = $dom->saveHTML();

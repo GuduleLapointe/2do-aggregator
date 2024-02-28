@@ -60,6 +60,21 @@ class Event {
 
         $data['category'] = $this->sanitize_category($data['category']);
 
+        if (empty($data['simname'])) {
+            $description = preg_replace('/%20/', ' ', $data['description']);
+            $reg_protocol = "((https?|hop:|secondlife:)\/\/)?";
+            $reg_host = "([\w-]+(\.[\w-]+)+)";
+            $reg_port = "(:\d+)";
+            $reg_region = "([:\/ \+]([\w _\+-](%20)?)+)?";
+            $reg_xyz = "((\/\d+){3})?";
+            $pattern = "/$reg_protocol$reg_host$reg_port$reg_region$reg_xyz/";
+            preg_match($pattern, $description, $matches);
+            if (!empty($matches)) {
+                $data['simname'] = $matches[0];
+                Aggregator::notice($data['name'] . " event hgurl set from description: " . $data['simname'] );
+            }
+        }
+
         $sanitized_url = $this->sanitize_hgurl($data['simname'], $calendar['grid_url'] );
         if($sanitized_url === false) {
             Aggregator::admin_notice( sprintf(

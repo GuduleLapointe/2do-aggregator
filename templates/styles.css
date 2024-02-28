@@ -253,3 +253,20 @@ span.duration {
         flex: 1 0 calc(100% / 7);
     }
 }
+
+.list-check {
+    list-style-type: none;
+}
+
+.list-check > [type=checkbox], 
+.list-check > [type=radio] {
+    margin: 0 0.2 0 -1.4em;
+    vertical-align: middle;
+}
+
+.list-check input:disabled,
+.list-check textarea:disabled,
+.list-check input:disabled *,
+.list-check textarea:disabled * {
+	color: color-mix(in hsl, canvastext 100%, canvas) !important;
+}

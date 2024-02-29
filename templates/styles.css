@@ -185,11 +185,11 @@ span.duration {
     gap: 10px;
     margin: 10px 0;
 }
+
 .day {
 	border: solid 1px var(--border-color);
 	border-radius: 5px;
 	
-    flex: 1 0 100%;
     display: flex;
     flex-direction: column;
 }
@@ -209,16 +209,15 @@ span.duration {
     text-transform: uppercase;
 }
 
-
 /*.today, .today > h3 {
 	background: green;
 	background: lightgreen;
 }*/
-
 .event {
-	min-width: 10em;
+    /*min-width: 10em;*/
     overflow-wrap: break-word;
-
+    word-break: break-word;
+    
     display: grid;
     gap: 10px;
     padding-top: 10px;
@@ -250,11 +249,25 @@ span.duration {
 }
 
 .event .description {
+	font-size: 0.9em;
     grid-area: description;
 }
 
 .event .teleport {
     grid-area: teleport;
+}
+
+.event .teleport .tplinks {
+	float: right;
+	margin: 0.25em 0 0 0.25em;
+}
+
+.event .teleport .tplink {
+	
+	background: var(--highlight-background);
+	padding: 4px;
+	border-radius: 5px;
+	font-size: smaller;
 }
 
 .event .tags {
@@ -294,7 +307,8 @@ nav li.section {
 
 @media (min-width: 640px) {
     .day {
-        flex: 1 0 calc(100% / 7);
+        flex: 1 0 10em;
+        min-width: 15em;
     }
 	nav ul {
 		flex-direction: row;
@@ -318,10 +332,10 @@ nav li.section {
 
 @media (prefers-color-scheme: dark) { 
     :root {
-        --main-color: #eee;
+        --main-color: #bbb;
         --main-background: #111;
         --border-color: #444;
-	    --link-color: #aaa;
+	    --link-color: #777;
 	    --highlight-color: #ccc;
         --highlight-background: #333;
         --today-color: green;

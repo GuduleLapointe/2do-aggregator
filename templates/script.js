@@ -195,6 +195,12 @@ function refreshCalendar(timeZone) {
                     dayElement.classList.add('today');
                 }
 
+                // Adjust the width of the day element based on the number of events
+                // to balance the layout
+                const eventCount = Math.min(eventsByWeek[weekNumber][day].length, 3);
+                const flexBasis = `calc(8% * ${eventCount})`;
+                dayElement.style.flexBasis = flexBasis;                        
+
                 dayElement.innerHTML = `<h3>${formattedDate}</h3>`;
                 
                 eventsByWeek[weekNumber][day].forEach(event => {

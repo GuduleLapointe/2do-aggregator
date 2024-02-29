@@ -126,6 +126,8 @@ class Fetcher {
     }
 
     public function fetch() {
+        $this->fetch_opensimworld();
+
         foreach ($this->calendars as $slug => $calendar) {
             if ($calendar['type'] == 'ical') {
                 $this->fetch_ical($slug, $calendar);
@@ -133,7 +135,7 @@ class Fetcher {
                 Aggregator::admin_notice ( "$slug source type ${calendar['type']} not implemented", 1 );
             }
         }
-        
+
         usort($this->events, function($a, $b) {
             return $a->dateUTC <=> $b->dateUTC;
         });
@@ -146,6 +148,51 @@ class Fetcher {
         $url = $calendar['ical_url'];
 
         $command = 'php ' . APP_DIR . '/parsers/parser-ical.php ' . escapeshellarg($url);
+        try {
+            $json = shell_exec($command);
+        } catch (Exception $e) {
+            Aggregator::admin_notice("$slug $url parse error " . " " . $e->get_code() . ": " . $e->get_message() );
+            return;
+        }
+        $source_events = json_decode($json, true);
+
+        if(empty($source_events)) {
+            Aggregator::notice("$slug no events");
+            return;
+        }
+        if(!is_array($source_events)) {
+            Aggregator::admin_notice("$slug $url error: wrong answer format", 1);
+            return;
+        }
+        
+        $events = array();
+        foreach ($source_events as $source) {
+            // Aggregator::admin_notice("source " . print_r($source, true) );
+
+            $event = new Event($source, $calendar);
+            if($event === false) {
+                continue;
+            }
+            // Don't override if already fetched, it might be a later date for repeating events
+            // TODO: check if repeating events share the same uid
+            // TODO: generate uid if not present (should not happen wih iCal though)
+            // if(empty($events[$event->uid]) && empty($this->events[$event->uid])) {
+                $events[$event->hash] = $event;
+            // }
+        }
+        Aggregator::notice("$slug " . count($events) . " events");
+        $this->events = array_merge($this->events, $events);
+    }
+
+    private function fetch_opensimworld() {
+        $slug = 'opensimworld';
+        $calendar = array(
+            'slug' => $slug,
+            'grid_url' => null,
+            'type' => 'crawler',
+        );
+
+        $command = 'php ' . APP_DIR . '/parsers/parser-opensimworld.php';
         try {
             $json = shell_exec($command);
         } catch (Exception $e) {

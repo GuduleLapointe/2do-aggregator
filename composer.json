@@ -12,7 +12,8 @@
     "require": {
         "kigkonsult/icalcreator": "^2.41",
         "matthiasmullie/minify": "^1.3",
-        "erusev/parsedown": "^1.7"
+        "erusev/parsedown": "^1.7",
+        "fabpot/goutte": "^4.0"
     },
     "require-dev": {
         "magicoli/php-bump-library": "^1.0"

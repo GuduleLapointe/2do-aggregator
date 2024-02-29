@@ -9,6 +9,7 @@ Unreleased changes
 * fix date and week display according to selected timezone
 * fix wrong date in html day block title
 * fix section menu disabling timezone selector
+* changed menu, set calendar first
 * removed deprecated fabpot/goutte package, use Symfony BrowserKit and DomCrawler instead
 * ignore composer.lock
 * Merge branch 'master' of github.com:GuduleLapointe/2do-aggregator

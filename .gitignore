@@ -3,6 +3,8 @@
 .DS_Store
 data/*
 config/*.cfg
+config/*.txt
+config/*.csv
 node_modules/
 vendor/
 test/
@@ -10,4 +12,3 @@ output/
 dev/
 templates/*.min.js
 templates/*.min.css
-config/sources.csv

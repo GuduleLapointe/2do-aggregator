@@ -17,9 +17,11 @@ class Fetcher {
     private $calendars = array();
     private $timeout = 5;
     private $events = array();
-    
+    private static $exclusions = array();
+
     public function __construct() {
         $this->read_config_ical();
+        $this->read_exclusions();
         $this->fetch();
         // print_r($this->events);
     }
@@ -69,6 +71,58 @@ class Fetcher {
                 'type' => 'ical',
             );
         }
+    }
+
+    private function read_exclusions($exclusionsFile = APP_DIR . '/config/exclude.txt') {
+        if (!file_exists($exclusionsFile)) {
+            Aggregator::notice("Exclusions file $exclusionsFile not found, it's open bar");
+            return;
+        }
+
+        $file = new SplFileObject($exclusionsFile);
+
+        while (!$file->eof()) {
+            $exclusion = $file->fgets();
+            $exclusion = trim($exclusion);
+
+            // Ignore empty lines
+            if ($exclusion === '') {
+                continue;
+            }
+
+            // Split the exclusion into slug and title
+            $parts = preg_split('/\s+/', $exclusion, 2);
+            $slug = $parts[0];
+
+            if($slug == "#" || $slug == "//") {
+                continue;
+            }
+            $title = $parts[1] ?? '';
+
+            // Ignore empty titles
+            if (empty($title)) {
+                continue;
+            }
+
+            self::$exclusions[$slug][] = $title;
+        }
+    }
+
+    public function get_exclusions() {
+        return self::$exclusions;
+    }
+
+    public static function isExcluded($slug, $title) {
+        if (isset(self::$exclusions[$slug])) {
+            // Should use prep_grep but it doesn't work properly with regex
+            foreach (self::$exclusions[$slug] as $exclusion) {
+                if (preg_match("/^" . $exclusion . "$/", $title)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     public function fetch() {

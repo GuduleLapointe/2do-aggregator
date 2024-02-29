@@ -58,6 +58,11 @@ class Event {
         // Make sure all required indices are present
         $data = array_merge( EVENT_STRUCTURE, $data);
 
+        if(Fetcher::isExcluded($calendar['slug'], $data['name'])) {
+            Aggregator::admin_notice("[" . $calendar['slug'] . "] " . $data['name'] . " is in exclusion list");
+            return false;
+        }
+
         $data['category'] = $this->sanitize_category($data['category']);
 
         if (empty($data['simname'])) {

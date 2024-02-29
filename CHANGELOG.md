@@ -7,6 +7,7 @@ Unreleased changes
 * fix date and week display according to selected timezone
 * fix wrong date in html day block title
 * fix section menu disabling timezone selector
+* removed obsolete fetcher.cfg.example
 * revert bug introduced in 9c0771cc93b74c2d54188d052db2b68428852bbf
 * Merge branch 'master' of github.com:GuduleLapointe/2do-aggregator
 * balance the layout by adjusting day columns width based on the number of events
@@ -15,6 +16,7 @@ Unreleased changes
 * detect event hgurl from description if location is not set
 * updated styles header padding
 * updated FAQ
+* update changelog
 
 0.1.4
 * added sections About (readme), FAQ and Changelog to web page

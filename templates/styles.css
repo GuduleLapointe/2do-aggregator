@@ -6,7 +6,8 @@
     --highlight-color: #666;
     --highlight-background: #ddd;
     --today-color: green;
-    --today-background: var(--highlight-background);
+    --today-background: lightgreen;
+    --today-background-usertz: #dfd;
 }
 
 body {
@@ -200,6 +201,7 @@ span.duration {
 	padding-inline: 10px;
 }
 .day > h3 {
+	border-radius: 5px 5px 0 0;
 	color: var(--highlight-color);
 	background: var(--highlight-background);
 	padding-block: 5px;
@@ -209,11 +211,11 @@ span.duration {
     text-transform: uppercase;
 }
 
+.day.today > h3 {
+	color: var(--today-color);
+	background: var(--today-background);
+}
 
-/*.today, .today > h3 {
-	background: green;
-	background: lightgreen;
-}*/
 .event {
     /*min-width: 10em;*/
     overflow-wrap: break-word;
@@ -230,6 +232,9 @@ span.duration {
         "tags tags";
 }
 
+.event.today-user {
+	background: var(--today-background-usertz);
+}
 .event:not(:first-child) {
 	border-top: solid 1px var(--border-color);
 }
@@ -339,7 +344,8 @@ nav li.section {
 	    --link-color: #777;
 	    --highlight-color: #ccc;
         --highlight-background: #333;
-        --today-color: green;
-        --today-background: var(--highlight-background);
+        --today-color: #0c0;
+        --today-background: darkgreen;
+	    --today-background-usertz: #131;
     }
 } 

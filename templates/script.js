@@ -140,6 +140,9 @@ function refreshCalendar(timeZone) {
     .then(response => response.json())
     .then(events => {
 
+        const nowUser = new Date();
+        const todayUser = nowUser.toISOString().split('T')[0];
+
         // Vérifiez que les données sont dans le format attendu
         if (!Array.isArray(events)) {
             throw new Error('Unable to read data source.');
@@ -216,6 +219,12 @@ function refreshCalendar(timeZone) {
                     const now = new Date();
                     if (now >= new Date(event.start) && now <= new Date(event.end)) {
                         eventElement.classList.add('ongoing');
+                    }
+                    
+                    // Add "today-user" class if event is today in the user's time zone
+                    const eventDayUser = new Date(event.start).toISOString().split('T')[0];
+                    if (eventDayUser === todayUser) {
+                        eventElement.classList.add('today-user');
                     }
                     
                     const options = { hour: 'numeric', minute: 'numeric' };

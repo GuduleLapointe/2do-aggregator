@@ -16,8 +16,8 @@ $source_url = "https://opensimworld.com/events/";
 $source_tz = 'America/Los_Angeles';
 
 $timeout = 5;
-$process_from = '- 1 day';
-$process_to = '+ 3 months';
+$process_from = '- 1 day'; // Not needed, source contain only ongoing and future events
+$process_to = '+ 3 months'; // Not needed, source contain only a few days
 
 $startDate = new DateTime();
 $startDate->modify($process_from);
@@ -49,6 +49,8 @@ $crawler = $browser->request('GET', $source_url);
 $i=0;
 $events = $crawler->filter('div.container.wcont table.table.table-striped.table-bordered tr')->each(function (Crawler $node) {
     global $source_url;
+    global $source_tz;
+
     $event = [];
 
     $title = $node->filter('h4 b a')->text();

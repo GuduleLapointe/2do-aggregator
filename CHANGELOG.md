@@ -2,21 +2,24 @@
 
 Unreleased changes
 * new exclusion list
+* added opensimworld crawler
 * added color differentiation for events happening today on the user time zone
 * added dark theme
+* fix undefined $source_tz
 * fix date and week display according to selected timezone
 * fix wrong date in html day block title
 * fix section menu disabling timezone selector
+* removed deprecated fabpot/goutte package, use Symfony BrowserKit and DomCrawler instead
+* ignore composer.lock
+* Merge branch 'master' of github.com:GuduleLapointe/2do-aggregator
 * removed obsolete fetcher.cfg.example
 * revert bug introduced in 9c0771cc93b74c2d54188d052db2b68428852bbf
-* Merge branch 'master' of github.com:GuduleLapointe/2do-aggregator
 * balance the layout by adjusting day columns width based on the number of events
 * remove rss link until it is implemented
 * removed debug output
 * detect event hgurl from description if location is not set
 * updated styles header padding
 * updated FAQ
-* update changelog
 
 0.1.4
 * added sections About (readme), FAQ and Changelog to web page

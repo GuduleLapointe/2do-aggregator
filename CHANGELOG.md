@@ -16,6 +16,7 @@ Unreleased changes
 * detect event hgurl from description if location is not set
 * updated styles header padding
 * updated FAQ
+* update changelog
 
 0.1.4
 * added sections About (readme), FAQ and Changelog to web page

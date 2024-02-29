@@ -183,7 +183,14 @@ function refreshCalendar(timeZone) {
                 const dayElement = document.createElement('div');
 
                 const dateObject = new Date(`${day}T00:00`);
+
+                const dateObject = new Date(`${day}T00:00`);
                 dayElement.id = `day-${day}`;
+
+                const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+                const formattedDate = dateObject.toLocaleDateString(undefined, options);
+
+                dayElement.classList.add('day', `day-${toSlug(formattedDate)}`);
 
                 const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
                 const formattedDate = dateObject.toLocaleDateString(undefined, options);

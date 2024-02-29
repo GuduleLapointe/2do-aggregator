@@ -1,15 +1,3 @@
-## Disclaimer
-
-Feb. 27 2024. I am working on a new version of the 2do aggregation engine. I cannot handle anymore the old python engine; it used to take, several times a day, 30 minutes and 6 cores to process what should be an easy task.
-
-This is a complete rewrite, with a new design (you can already see below where I want to go), new features, but, most importantly, a very faster crawling process: it now takes less than 2 minutes instead of 30 and the cpu takes a nap instead of burning. I am very happy with the result.
-
-The bad side is that it takes time to rewrite all the specific import procedures. So, for now, the events are not as numerous as they used to be. I am working on it, and I hope to have a complete and stable version in a few days.
-
-Thank you for your patience.
-
-    Gudule Lapointe
-
 # Recommended usage
 
 The easiest and more efficient way to enable events search in your grid is to use 2do Directory, the public calendar based on this application. It is the recommended way for hypergrid-enabled regions and grid, as not only it avoids the installation of additional software, but it also allows to share events between grids.

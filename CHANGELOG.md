@@ -1,6 +1,6 @@
 ## Changelog
 
-Unreleased changes
+0.1.5
 * new exclusion list
 * added opensimworld crawler
 * added color differentiation for events happening today on the user time zone

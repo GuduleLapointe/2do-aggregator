@@ -31,12 +31,6 @@ function durationNaturalLanguage(duration) {
     return durationNL.trim();
 }
 
-function getUniqueWeekNumber(d) {
-    // Start from 1970-01-05 which is a monday
-    const referenceDate = new Date('1970-01-05');
-    const days = Math.floor((d - referenceDate) / (1000 * 60 * 60 * 24));
-    return Math.floor(days / 7);
-}
 
 var timeZone = 'America/Los_Angeles'; // OpenSimulator/SL Time
 
@@ -124,6 +118,16 @@ function updateStatus(message) {
     statusElement.innerHTML = message;
 }
 
+function getUniqueWeekNumber(d) {
+    // Start from 1970-01-05 which is a monday
+    const referenceDate = moment.tz('1970-01-05', timeZone);
+
+    // Calculate the difference in days
+    const days = d.diff(referenceDate, 'days');
+
+    return Math.floor(days / 7);
+}
+
 /**
  * Fetch and display events
 */
@@ -157,14 +161,15 @@ function refreshCalendar(timeZone) {
             const startDate = moment(event.start).tz(timeZone).toDate();
             const endDate = moment(event.end).tz(timeZone).toDate();
             
-            const weekNumber = getUniqueWeekNumber(startDate);
+            const weekNumber = getUniqueWeekNumber(moment(startDate));
             
             if (!eventsByWeek[weekNumber]) {
                 eventsByWeek[weekNumber] = {};
             }
             
-            const day = startDate.toISOString().split('T')[0]; // Obtenez la date complète au format YYYY-MM-DD
-            
+            // const day = startDate.toISOString().split('T')[0]; // Obtenez la date complète au format YYYY-MM-DD
+            const day = moment(startDate).tz(timeZone).format('YYYY-MM-DD');
+
             if (!eventsByWeek[weekNumber][day]) {
                 eventsByWeek[weekNumber][day] = [];
             }

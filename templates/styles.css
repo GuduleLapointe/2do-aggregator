@@ -8,6 +8,7 @@
     --today-color: green;
     --today-background: lightgreen;
     --today-background-usertz: #dfd;
+    --gap: 10px;
 }
 
 body {
@@ -136,7 +137,7 @@ nav ul {
     flex-direction: column;
     justify-content: space-between;
     vertical-align: center;
-    gap: 10px;
+    gap: var(--gap);
 	margin: 0;
 }
 nav > ul > li {
@@ -145,7 +146,7 @@ nav > ul > li {
 
 header:not(.sticky) nav ul,
 header.sticky {
-    padding: 10px;
+    padding: var(--gap);
     margin: 0;
     color: var(--highlight-color);
     background-color: var(--highlight-background);
@@ -177,7 +178,7 @@ nav #subscribe-links {
 footer {
     font-size: smaller;
 
-    padding: 10px;
+    padding: var(--gap);
     text-align: center;
 }
 
@@ -197,7 +198,7 @@ span.duration {
 	margin-top: 0;
 }
 .day > * {
-	padding-inline: 10px;
+	padding-inline: var(--gap);
 }
 .day > h3 {
 	border-radius: 5px 5px 0 0;
@@ -221,8 +222,8 @@ span.duration {
     word-break: break-word;
     
     display: grid;
-    gap: 10px;
-    padding-top: 10px;
+    gap: var(--gap);
+    padding-top: var(--gap);
     grid-template-columns: auto 3fr; /* Ajustez ces valeurs selon vos besoins */
     grid-template-areas: 
         "time title"
@@ -283,7 +284,7 @@ span.duration {
 .disclaimer {
     font-size: smaller;
     opacity: 0.7;
-    padding: 10px;
+    padding: var(--gap);
     margin: auto;
     max-width: 60em;
 }
@@ -315,13 +316,15 @@ nav li.section {
         display: flex;
         flex-wrap: wrap;
         justify-content: space-between;
-        gap: 10px;
-        margin: 10px 0;
+        gap: var(--gap);
+        margin: var(--gap) 0;
     }
 
     .day {
+    	min-width: 12em;
         flex: 1 0 10em;
-        min-width: 15em;
+        min-width: 12em;
+        flex-basis: min-content;
     }
 	nav ul {
 		flex-direction: row;

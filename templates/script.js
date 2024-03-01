@@ -205,9 +205,13 @@ function refreshCalendar(timeZone) {
 
                 // Adjust the width of the day element based on the number of events
                 // to balance the layout
-                const eventCount = Math.min(eventsByWeek[weekNumber][day].length, 3);
-                const flexBasis = `calc(8% * ${eventCount})`;
-                dayElement.style.flexBasis = flexBasis;                        
+                const factor = 4;
+                const maxPercentage = 40; // Le pourcentage maximum que vous voulez atteindre
+                const maxEvents = Math.ceil(maxPercentage / factor);
+                const eventCount = Math.min(eventsByWeek[weekNumber][day].length, maxEvents);
+                const stretch = factor * eventCount;
+                const flexBasis = `calc(8% + ${stretch}%)`;
+                dayElement.style.flexBasis = flexBasis;
 
                 dayElement.innerHTML = `<h3>${formattedDate}</h3>`;
                 
@@ -253,13 +257,17 @@ function refreshCalendar(timeZone) {
             
             eventsContainer.appendChild(weekElement);
         });
-        // status finished processing
+
         updateStatus('');
     })
+    // status finished processing
     .catch(error => {
         // Gérez les erreurs ici
         console.error('Erreur:', error);
     });
+    
+    
+
 }
 
 refreshCalendar(timeZone);
@@ -283,10 +291,8 @@ const sticky = header.offsetTop;
 
 window.addEventListener('scroll', function() {
     if (window.pageYOffset > sticky) {
-        console.log('sticky');
         header.classList.add('sticky');
     } else {
-        console.log('not sticky');
         header.classList.remove('sticky');
     }
 });
@@ -308,3 +314,4 @@ document.querySelectorAll('nav li.section').forEach(function(menuItem) {
         document.getElementById(target).style.display = 'block';
     });
 });
+

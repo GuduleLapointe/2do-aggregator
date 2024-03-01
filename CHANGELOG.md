@@ -1,6 +1,11 @@
 ## Changelog
 
 Unreleased changes
+* added fetcher cache to ease the developer's life
+* fix mobile flex style
+* fix fmobile flex style
+* updated fluid calendar style
+* removed disclaimer, scraping engine is globally back to normal
 * set stable to 0.1.5
 
 0.1.5

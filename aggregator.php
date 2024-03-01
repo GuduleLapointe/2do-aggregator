@@ -57,7 +57,20 @@ class Aggregator {
      */
     public function run() {
         // Collect and process events
-        $fetcher = new Fetcher();
+
+        // Rough cache system, mostly to ease development without affecting production
+        $cache_file = APP_DIR . '/cache/cache_fetcher.json';
+        $cache_time = 1 * 3600;
+
+        if (!file_exists($cache_file) || (filemtime($cache_file) + $cache_time < time())) {
+            $fetcher = new Fetcher();
+            file_put_contents($cache_file, serialize($fetcher));
+            touch($cache_file); // Met à jour l'heure de modification du fichier
+            Aggregator::notice("Cache file created: $cache_file");
+        } else {
+            Aggregator::notice("Using cache file: $cache_file");
+            $fetcher = unserialize(file_get_contents($cache_file));
+        }
 
         // Write events to file
         new HYPEvents_Exporter($fetcher->get_events(), $this->output_dir);

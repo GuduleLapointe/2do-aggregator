@@ -60,7 +60,7 @@ class Aggregator {
 
         // Rough cache system, mostly to ease development without affecting production
         $cache_file = APP_DIR . '/cache/cache_fetcher.json';
-        $cache_time = 1 * 3600;
+        $cache_time = 55 * 60; // 55 minutes, to accomodate for 1 hour cron job
 
         if (!file_exists($cache_file) || (filemtime($cache_file) + $cache_time < time())) {
             $fetcher = new Fetcher();

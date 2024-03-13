@@ -1,7 +1,7 @@
 # 2DO Aggregator
 
 ![Version 0.1.6](https://badgen.net/badge/Version/0.1.6/FFaa00)
-![Stable 0.1.6](https://badgen.net/badge/0.1.5/None/00aa00)
+![Stable 0.1.6](https://badgen.net/badge/0.1.6/None/00aa00)
 ![Requires PHP 7.3](https://badgen.net/badge/PHP/7.3/7884bf)
 ![License AGPLv3](https://badgen.net/badge/License/AGPLv3/552b55)
 
@@ -17,10 +17,10 @@ Import formats:
 
 - [x] iCal (ics, iCalendar)
 - Custom web parsers:
-  - opensimworld
-  - islandoasis
-  - thirdrock
-  - gridtalk (?)
+  - [x] opensimworld
+  - [x] thirdrock
+  - gridtalk (to do)
+  - OpenSim Fest (to do)
 
 Export formats:
 

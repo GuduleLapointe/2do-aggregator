@@ -11,7 +11,7 @@
  * See README.md for more information.
  * 
  * @package 2do-aggregator
- * @version 0.1.5
+ * @version 0.1.6
  * 
  * Plugin Name: (not a plugin, but keep this line, needed by bumping tool)
 **/
@@ -111,7 +111,7 @@ class Aggregator {
      * Define constants for the application
      */
     private static function constants() {
-        define( 'AGGREGATOR_VERSION', '0.1.5' );
+        define( 'AGGREGATOR_VERSION', '0.1.6' );
         define( 'BOARD_VER', '1.5.5' );
         
         define('APP_DIR', __DIR__);

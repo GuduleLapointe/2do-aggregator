@@ -1,9 +1,11 @@
 ## Changelog
 
-Unreleased changes
+0.1.6
 * added fetcher cache to ease the developer's life
 * fix mobile flex style
 * fix fmobile flex style
+* removed the barely working disclaimer, transition is finished and it works if not perfectly, at least better than before
+* set cache timeout to 55 minutes, to accomodate for 1 hour cron job
 * updated fluid calendar style
 * removed disclaimer, scraping engine is globally back to normal
 * set stable to 0.1.5

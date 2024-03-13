@@ -7,8 +7,6 @@
 
 The PHP port of python [2do-server](https://github.com/GuduleLapointe/2do-server).
 
-**This is a work in progress. Honestly, it's barely working at this stage. If you need a not perfect but production-ready alternative, use the original 2do-server.**
-
 _Before download or install_ : the easiest way to use this is to get the teleport board in-world (hop://speculoos.world:8002:Lab) and ask us to include your calendar in [2do.directory](https://2do.directory/).
 
 Aggregator is a tool to fetch events from various sources and export them 

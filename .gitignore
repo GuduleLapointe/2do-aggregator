@@ -14,3 +14,4 @@ templates/*.min.js
 templates/*.min.css
 composer.lock
 cache/*
+config/targets

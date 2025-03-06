@@ -1,5 +1,8 @@
 ## Changelog
 
+0.2.0
+* new cron script to schedule the calendar synchronization
+
 0.1.6
 * added fetcher cache to ease the developer's life
 * fix mobile flex style

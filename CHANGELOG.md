@@ -1,5 +1,14 @@
 ## Changelog
 
+Unreleased (dev)
+* Version alignment: aggregator and 2do-board both bump to 3.x to match API v3
+* API v3: clean REST-style URL routing (/api/v3/events/lsl, /api/v3/events/json,
+  /api/v3/events/board.png) with fallback query-param routes for servers without
+  URL rewriting (?api=v3, ?format=png)
+* front controller (index.php) compiled as PHAR for single-file standalone deploy
+* 404 and EOL (410) responses for unknown and obsolete endpoints
+* .htaccess included in standalone bundle for Apache URL rewriting
+
 0.3.0
 * events.php: dynamic LSL output filtered server-side to stay within the LSL
   HTTP_BODY_MAXLENGTH limit (4096 bytes), fixing the blank-board bug caused by
@@ -12,7 +21,7 @@
 * events.php: URL parameters aligned with LSL Configuration notecard names:
   textureWidth, textureHeight, bannerHeight, lineHeight, cellPadding,
   mainFontName, mainFontSize, hourFontName, hourFontSize
-* events.php: anticipates 2do-board 1.6.0 (BOARD_VER updated)
+* events.php: anticipates 2do-board 1.6.0
 * Font detection: Roboto, SF (macOS), Arial (Windows/macOS), DejaVu (Linux)
 * Widow fix: day headers never appear without at least one event below them
 * dev/start-server.sh: Symfony CLI dev server with fswatch auto-sync

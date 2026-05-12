@@ -2,17 +2,20 @@
 #*#
 .DS_Store
 data/*
+!data/.keep
 config/*.cfg
 config/*.txt
 config/*.csv
 node_modules/
 vendor/
 test/
-output/
-templates/*.min.js
-templates/*.min.css
-composer.lock
+/bundle/
+src/bundle/standalone/css/*.min.css
+src/bundle/standalone/js/*.min.js
+# composer.lock is committed to pin dependency versions across environments
 cache/*
 config/targets
 tmp/
 logs/
+.env
+/public/ci-deploy-test/

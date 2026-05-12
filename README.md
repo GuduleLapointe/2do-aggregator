@@ -1,11 +1,9 @@
-# 2DO Aggregator
+# 2DO
 
-![Version 0.3.0](https://badgen.net/badge/Version/0.3.0/FFaa00)
-![Stable 0.3.0](https://badgen.net/badge/0.3.0/Stable/00aa00)
+![Version 3.0.0-dev](https://badgen.net/badge/Version/3.0.0/FFaa00)
+![Stable 0.2.0](https://badgen.net/badge/3.0.0/Stable/00aa00)
 ![Requires PHP 8.2](https://badgen.net/badge/PHP/8.2/7884bf)
 ![License AGPLv3](https://badgen.net/badge/License/AGPLv3/552b55)
-
-The PHP port of python [2do-server](https://github.com/GuduleLapointe/2do-server).
 
 _Before download or install_ : the easiest way to use this is to get the teleport board in-world (hop://speculoos.world:8002:Lab) and ask us to include your calendar in [2do.directory](https://2do.directory/).
 
@@ -24,12 +22,36 @@ Import formats:
 
 Export formats:
 
-- [x] HYPEvent (legacy 2do/HYPEvent format)
-  - [x] events.lsl2 (for current versions of 2do-board)
-  - [x] events.lsl  (old format, now includes only a deprecation notice)
-- [x] JSON (events.json) compatible with events parsers (provided by w4os or Flexible Helper Scripts)
-- [x] iCal (events.ics) iCalendar format, compatible with web, mobile and desktop calendars
-- [x] Light html web calendar page for standalone use
+`/api/v3/events` is the main base of the different checkpoints.
+
+- [x] `/api/v3/events/lsl` (default): csv list, including event details and click mapping coordinates for v3 in-world scripts
+- [x] `/api/v3/events/png`: server-rendered board image for use with v3 scripts
+- [x] `/api/v3/events/ics`: iCalendar format for use with web, mobile and desktop applications
+- [x] `/api/v3/events/json`: JSON format for general use with custom scripts or apps
+- [x] `/api/v2/events/lsl`: legacy "lsl2" plain-text event list for use with both v2 and v3 in-world scripts
+
+Legacy pseudo-endpoints are supported for backwards compatibility with v2 scripts. They are served dynamically by the api with the same output as the main endpoints, and are also generated as fallback static files on each fetch job.
+
+- [x] `events.lsl2`
+- [x] `events.ics`
+- [x] `events.json`
+- [x] `events.lsl`: deprecation notice for even older legacy scripts
+- [x] `static.html`: light standalone web calendar page for standalone use
+- [x] `events.php`: light standalone app, for classic direct access without rewrite rules
+
+### URL parameters (for api endpoints or standalone `events.php`)
+
+| Parameter | Default | Description |
+|-----------|---------|-------------|
+| `format` | `lsl2` | (standalone only) Output format: `lsl2`, `png`, `clickmap` |
+| `width` | `512` | Canvas width in pixels |
+| `height` | `512` | Canvas height in pixels |
+| `ratio` | `1.0` | Face aspect ratio (width/height); adjusts canvas dimensions |
+| `not-before` | `7200` | Skip events starting within this many seconds (0 = include all upcoming) |
+| `limit` | `100` | Maximum number of events to return |
+| `theme` | `default` | Color theme (e.g. `dark`) |
+
+Style overrides are accepted as `section-property` query parameters (e.g. `main-background`, `row-padding`, `hour-font-size`). Dimensions are scaled proportionally to canvas width (512 px reference).
 
 This is a side PHP application intended to provide the same functionality as 2do-server, the original events fetcher of 2do project and the original HYPEvents code, but in a more modular and maintainable way, and with better integration with other tools of 2do Events, w4os and Flexiple Helper Scripts projects.
 
@@ -37,7 +59,7 @@ This is a side PHP application intended to provide the same functionality as 2do
 
 For grid owners :
 - [W4OS](https://w4os.org): a WordPress plugin to manage OpenSimulator grids and provide external helpers, including 2do Events
-- [Flexible Helper Scripts](https://github.com/GuduleLapointe/flexible_helper_scripts): a standalione collection of scripts providing the same helpers, without the web interface
+- [OpenSim Helpers](https://github.com/GuduleLapointe/opensim-helpers): a standalione collection of scripts providing the same helpers, without the web interface
 
 
 ## Getting started (recommended)
@@ -66,7 +88,7 @@ See **[INSTALLATION.md](INSTALLATION.md)** for full instructions (dependencies, 
 Events must have
 - A title
 - A start and end date/time
-- A location composed of the region HG url (e.g. yourgrid.org:8002:My_Region)
+- A location composed of the region HG url. The url format is quite flexible, you can use variants, most recommended ones are hop links (`hop://yourgrid.org:8002/My+Region`) or user-friendly text (`yourgrid.org:8002/My_Region`).
 
 They might also include
 - A description (optional but recommended)
@@ -105,3 +127,5 @@ Events parsers for in-world search:
 Public calendars to use without installing this app:
 - [2do.directory](https://2do.directory), the public 2do Events hypergrid directory.
 - [OutWorldz OpensimEvents](https://github.com/Outworldz/OpensimEvents) another calendar based on HYPEvents/2do Events.
+
+This project is the PHP port of python [2do-server](https://github.com/GuduleLapointe/2do-server), which is now deprecated.

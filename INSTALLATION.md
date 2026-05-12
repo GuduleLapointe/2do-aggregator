@@ -17,7 +17,7 @@
    cp config/exclude.txt.example config/exclude.txt    # event exclusions (optional)
    ```
 4. Configure your web server (see [Web server](#web-server) below)
-5. Run `./aggregator.php output/` and check the output
+5. Run `./aggregator.php public/` and check the output
 6. Run `./cron.sh` and verify it syncs correctly
 7. Schedule the cron job (see [Scheduling](#scheduling-cron) below)
 
@@ -43,8 +43,8 @@ sudo apt-get install -y \
 
 ### macOS (Homebrew)
 
-Homebrew PHP ships with most extensions built-in (mbstring, xml, dom, json, curl, iconv…).
-Two extensions require a separate PECL install:
+Homebrew PHP ships with most extensions built-in — including mbstring, xml, dom, json, curl, iconv.
+`imagick` is the only one that requires a separate install:
 
 ```bash
 brew install php imagemagick pkg-config
@@ -80,11 +80,11 @@ composer install --no-dev
 | Extension | Required by | Notes |
 |-----------|-------------|-------|
 | **php-mbstring** | `export-html.php`, `export-hypevents.php`, `functions.php`, `events.php` | UTF-8 string handling |
-| **php-xml** / **php-dom** | `export-html.php` | DOM manipulation to build `index.html` |
+| **php-xml** / **php-dom** | `export-html.php` | DOM manipulation to build `static.html` |
 | **php-curl** | Symfony HTTP client (Composer) | Fetching remote calendars and web sources |
 | **php-imagick** | `events.php` (PNG board image) | Font rendering via system fontconfig; no TTF path needed |
 | **php-iconv** | `export-hypevents.php`, `events.php` | Character set conversion to ASCII |
-| **phpxmlrpc/phpxmlrpc** | `includes/functions.php` | XML-RPC calls to OpenSim grid helpers. The native `xmlrpc_*` functions were removed in PHP 8.0; this Composer package provides a drop-in polyfill (`includes/library-xmlrpc.php`, shared with w4os). Installed automatically by `composer install`. |
+| **phpxmlrpc/phpxmlrpc** | `includes/functions.php` | XML-RPC calls to OpenSim grid helpers. The native `xmlrpc_*` functions were removed in PHP 8.0; this package provides a drop-in polyfill (`includes/xmlrpc-polyfill.php`, shared with w4os). Installed automatically by `composer install`. |
 | **php-json** | everywhere | Built into PHP 8.x — no package needed |
 
 ---
@@ -103,7 +103,7 @@ Only needed to run the local dev server (`dev/start-server.sh`).
 | Tool | Role | Install |
 |------|------|---------|
 | Symfony CLI | Local HTTPS dev server | <https://symfony.com/download> |
-| `fswatch` | Auto-sync `templates/` → `output/` on save | `brew install fswatch` (macOS) / `apt-get install fswatch` |
+| `fswatch` | Auto-sync `src/` → `public/` on save | `brew install fswatch` (macOS) / `apt-get install fswatch` |
 
 Both are optional: without Symfony CLI the script falls back to `php -S` (plain HTTP), and without `fswatch` you copy files manually.
 
@@ -111,7 +111,7 @@ Both are optional: without Symfony CLI the script falls back to `php -S` (plain 
 
 ## Web server
 
-The aggregator writes its output to a directory (default `output/`). That directory
+The aggregator writes its output to a directory (default `public/`). That directory
 must be served by a web server. Assuming `/var/www/html` is your document root and
 the aggregator runs in `/opt/2do-aggregator`, this would produce:
 
@@ -136,7 +136,7 @@ server-side. It is the recommended URL for the 2do Board because:
 Alias `events.lsl2` to `events.php` so the board always gets the dynamic version:
 
 ```apache
-Alias /events/events.lsl2 /opt/2do-aggregator/output/events.php
+Alias /events/events.lsl2 /opt/2do-aggregator/public/events.php
 ```
 
 ### events.php URL parameters
@@ -184,7 +184,7 @@ xmlrpc
 Run the aggregator manually once to confirm everything works:
 
 ```bash
-php aggregator.php output/
+php aggregator.php public/
 ```
 
 ---
